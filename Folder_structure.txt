@@ -1,0 +1,194 @@
+## Complete Folder Structure
+
+Capstone-Management-Platform/
+├── backend/                       # Django backend
+├── frontend/                      # Next.js frontend
+├── .gitignore                     # Git ignore rules
+├── README.md                      # Project documentation
+├── docker-compose.yml             # Docker configuration
+└── Folder_structure.txt           # This file
+
+
+### Backend Structure (Django)
+
+backend/
+├── config/                        # Main Django project settings
+│   ├── __init__.py               # Python package init
+│   ├── settings.py               # Django settings
+│   ├── urls.py                   # Main URL configuration
+│   ├── wsgi.py                   # WSGI server config
+│   └── asgi.py                   # ASGI server config (WebSocket support)
+│
+├── apps/                         # All Django applications
+│   ├── __init__.py              # Apps package init
+│   │
+│   ├── authentication/           # Custom user and auth logic
+│   │   ├── __init__.py
+│   │   ├── models.py            # User models
+│   │   ├── views.py             # Auth views
+│   │   ├── serializers.py       # DRF serializers
+│   │   ├── urls.py              # Auth routes
+│   │   ├── admin.py             # Admin configuration
+│   │   ├── apps.py              # App configuration
+│   │   ├── tests.py             # Unit tests
+│   │   └── migrations/          # Database migrations
+│   │
+│   ├── users/                    # User profiles
+│   │   ├── __init__.py
+│   │   ├── models.py
+│   │   ├── views.py
+│   │   ├── serializers.py
+│   │   ├── urls.py
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── tests.py
+│   │   └── migrations/
+│   │
+│   ├── students/                 # Student-specific features
+│   │   ├── __init__.py
+│   │   ├── models.py
+│   │   ├── views.py
+│   │   ├── serializers.py
+│   │   ├── urls.py
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── tests.py
+│   │   └── migrations/
+│   │
+│   ├── professors/               # Professor-specific features
+│   │   ├── __init__.py
+│   │   ├── models.py
+│   │   ├── views.py
+│   │   ├── serializers.py
+│   │   ├── urls.py
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── tests.py
+│   │   └── migrations/
+│   │
+│   ├── admin/                    # Admin-specific features
+│   │   ├── __init__.py
+│   │   ├── models.py
+│   │   ├── views.py
+│   │   ├── serializers.py
+│   │   ├── urls.py
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── tests.py
+│   │   └── migrations/
+│   │
+│   └── common/                   # Shared functionality
+│       ├── __init__.py
+│       ├── models.py            # Shared models
+│       ├── utils.py             # Helper functions
+│       ├── mixins.py            # Reusable mixins
+│       ├── permissions.py       # Custom permissions
+│       └── tests.py
+│
+├── static/                       # Collected static files (CSS, JS, images)
+├── media/                        # User-uploaded files
+│
+├── requirements.txt              # Python dependencies
+├── manage.py                     # Django management script
+├── .env                         # Environment variables (DO NOT COMMIT)
+└── .env.example                 # Environment variables template
+
+
+### Frontend Structure (Next.js 14+ with App Router)
+
+frontend/
+├── app/                          # Next.js app directory (routing)
+│   ├── (auth)/                  # Route group for authentication
+│   │   ├── admin-login/
+│   │   │   └── page.tsx        # Admin login page
+│   │   ├── student-login/
+│   │   │   └── page.tsx        # Student login page
+│   │   └── professor-login/
+│   │       └── page.tsx        # Professor login page
+│   │
+│   ├── admin/                   # Admin routes
+│   │   ├── dashboard/
+│   │   │   └── page.tsx        # Admin dashboard
+│   │   └── layout.tsx          # Admin-specific layout
+│   │
+│   ├── student/                 # Student routes
+│   │   ├── dashboard/
+│   │   │   └── page.tsx        # Student dashboard
+│   │   └── layout.tsx          # Student-specific layout
+│   │
+│   ├── professor/               # Professor routes
+│   │   ├── dashboard/
+│   │   │   └── page.tsx        # Professor dashboard
+│   │   └── layout.tsx          # Professor-specific layout
+│   │
+│   ├── layout.tsx              # Root layout (applies to all pages)
+│   └── page.tsx                # Home page
+│
+├── components/                  # React components
+│   ├── admin/                  # Admin-specific components
+│   ├── student/                # Student-specific components
+│   ├── professor/              # Professor-specific components
+│   └── shared/                 # Shared components
+│       ├── ui/                 # Reusable UI components
+│       ├── forms/              # Form components
+│       └── layouts/            # Layout components
+│
+├── lib/                        # Utility functions and helpers
+│   ├── api/                    # API client functions
+│   │   ├── auth.ts            # Authentication API calls
+│   │   ├── students.ts        # Student API calls
+│   │   ├── professors.ts      # Professor API calls
+│   │   └── client.ts          # Base API client
+│   └── utils/                  # Helper functions
+│       ├── validation.ts      # Form validation
+│       ├── formatting.ts      # Data formatting
+│       └── constants.ts       # Constants
+│
+├── hooks/                      # Custom React hooks
+│   ├── useAuth.ts             # Authentication hook
+│   ├── useUser.ts             # User data hook
+│   └── useApi.ts              # API hook
+│
+├── types/                      # TypeScript type definitions
+│   ├── user.ts                # User types
+│   ├── api.ts                 # API response types
+│   └── index.ts               # Type exports
+│
+├── contexts/                   # React Context providers
+│   ├── AuthContext.tsx        # Authentication context
+│   └── ThemeContext.tsx       # Theme context
+│
+├── styles/                     # Global styles
+│   └── globals.css            # Global CSS + Tailwind
+│
+├── public/                     # Static assets
+│   ├── images/                # Images
+│   ├── fonts/                 # Custom fonts
+│   └── favicon.ico            # Favicon
+│
+├── middleware.ts              # Next.js middleware (auth, redirects)
+├── next.config.js             # Next.js configuration
+├── tsconfig.json              # TypeScript configuration
+├── tailwind.config.js         # Tailwind CSS configuration
+├── postcss.config.js          # PostCSS configuration
+├── package.json               # Node.js dependencies
+├── .env.local                 # Environment variables (DO NOT COMMIT)
+└── .env.local.example         # Environment variables template
+
+
+### Project Root Files
+
+- **README.md** - Project documentation and setup instructions
+- **.gitignore** - Files and directories to ignore in Git
+- **docker-compose.yml** - Docker container orchestration
+- **Folder_structure.txt** - This comprehensive folder structure guide
+
+
+### Key Notes
+
+1. **Environment Files**: `.env` and `.env.local` should NEVER be committed to Git
+2. **Migrations**: Each Django app should have a `migrations/` folder (created with `makemigrations`)
+3. **Static Files**: Django will collect static files into `backend/static/` with `collectstatic`
+4. **Media Files**: User uploads go to `backend/media/`
+5. **TypeScript**: All frontend files use `.tsx` for React components and `.ts` for utilities
+6. **App Router**: Frontend uses Next.js 14+ app router (not pages router)
