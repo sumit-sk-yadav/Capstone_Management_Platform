@@ -42,15 +42,20 @@ export default function Home() {
                         </div>
                     </div>
 
-                    {/* Admin Login */}
+                    {/* Admin Access */}
                     <div className="card hover:shadow-lg transition-shadow md:col-span-2">
                         <h2 className="text-2xl font-semibold mb-4">Administrators</h2>
                         <p className="text-gray-600 dark:text-gray-400 mb-4">
-                            Manage the entire platform with Google authentication
+                            Manage the entire platform
                         </p>
-                        <Link href="/admin-login" className="btn btn-primary">
-                            Admin Login with Google
-                        </Link>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <Link href="/register/admin" className="block btn btn-primary text-center">
+                                Admin Registration
+                            </Link>
+                            <Link href="/login" className="block btn bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-center">
+                                Admin Login
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </div>

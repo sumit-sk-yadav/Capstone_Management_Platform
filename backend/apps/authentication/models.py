@@ -17,7 +17,6 @@ class User(AbstractUser):
 
     AUTH_PROVIDER_CHOICES = [
         ("jwt", "JWT"),
-        ("google", "Google OAuth"),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -27,9 +26,9 @@ class User(AbstractUser):
         max_length=20, choices=AUTH_PROVIDER_CHOICES, default="jwt"
     )
     is_verified = models.BooleanField(default=False)
-    google_id = models.CharField(max_length=255, blank=True, null=True, unique=True)
+    is_verified = models.BooleanField(default=False)
 
-    # Override username to make it optional for Google OAuth users
+    # Override username to make it optional for Google OAuth users (No longer needed strictly for Google but good for flexibility)
     username = models.CharField(max_length=150, unique=True, blank=True, null=True)
 
     # Make email the primary login field

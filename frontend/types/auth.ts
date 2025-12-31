@@ -5,7 +5,7 @@ export interface User {
     first_name: string;
     last_name: string;
     role: 'admin' | 'student' | 'professor';
-    auth_provider: 'jwt' | 'google';
+    auth_provider: 'jwt';
     is_verified: boolean;
     date_joined: string;
 }

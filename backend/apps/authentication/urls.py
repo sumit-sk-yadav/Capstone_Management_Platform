@@ -6,7 +6,6 @@ from .views import (
     AdminRegistrationView,
     LoginView,
     LogoutView,
-    GoogleOAuthLoginView,
     CurrentUserView,
 )
 
@@ -30,10 +29,6 @@ urlpatterns = [
     path("logout/", LogoutView.as_view(), name="logout"),
     # Token management
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
-    # Google OAuth (for admins only)
-    path(
-        "admin/google-login/", GoogleOAuthLoginView.as_view(), name="admin-google-login"
-    ),
     # Current user
     path("me/", CurrentUserView.as_view(), name="current-user"),
 ]

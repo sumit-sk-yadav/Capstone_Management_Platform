@@ -4,9 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate, get_user_model
-from google.oauth2 import id_token
-from google.auth.transport import requests
-from django.conf import settings
+
 
 from .serializers import (
     StudentRegistrationSerializer,
@@ -178,85 +176,6 @@ class LogoutView(APIView):
             return Response(
                 {"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST
             )
-
-
-class GoogleOAuthLoginView(APIView):
-    """
-    Google OAuth Login for Admins Only
-    POST /api/auth/admin/google-login/
-    """
-
-    permission_classes = [AllowAny]
-
-    def post(self, request):
-        token = request.data.get("token")
-
-        if not token:
-            return Response(
-                {"error": "Token is required"}, status=status.HTTP_400_BAD_REQUEST
-            )
-
-        try:
-            # Verify the Google token
-            idinfo = id_token.verify_oauth2_token(
-                token, requests.Request(), settings.GOOGLE_CLIENT_ID
-            )
-
-            if idinfo["iss"] not in [
-                "accounts.google.com",
-                "https://accounts.google.com",
-            ]:
-                raise ValueError("Wrong issuer.")
-
-            # Extract user info
-            google_id = idinfo["sub"]
-            email = idinfo["email"]
-            first_name = idinfo.get("given_name", "")
-            last_name = idinfo.get("family_name", "")
-
-            # Check if user exists
-            user, created = User.objects.get_or_create(
-                google_id=google_id,
-                defaults={
-                    "email": email,
-                    "first_name": first_name,
-                    "last_name": last_name,
-                    "role": "admin",
-                    "auth_provider": "google",
-                    "is_verified": True,
-                },
-            )
-
-            # Update user info if not created
-            if not created:
-                if user.role != "admin":
-                    return Response(
-                        {"error": "This account is not authorized for admin access"},
-                        status=status.HTTP_403_FORBIDDEN,
-                    )
-
-                user.email = email
-                user.first_name = first_name
-                user.last_name = last_name
-                user.save()
-
-            # Generate JWT tokens
-            refresh = RefreshToken.for_user(user)
-
-            return Response(
-                {
-                    "user": UserSerializer(user).data,
-                    "tokens": {
-                        "refresh": str(refresh),
-                        "access": str(refresh.access_token),
-                    },
-                    "message": "Admin logged in successfully",
-                },
-                status=status.HTTP_200_OK,
-            )
-
-        except ValueError as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CurrentUserView(APIView):
