@@ -23,7 +23,7 @@ class UserAdmin(BaseUserAdmin):
         ("Personal Info", {"fields": ("first_name", "last_name", "username")}),
         (
             "Role & Authentication",
-            {"fields": ("role", "auth_provider", "google_id", "is_verified")},
+            {"fields": ("role", "auth_provider", "is_verified")},
         ),
         (
             "Permissions",
