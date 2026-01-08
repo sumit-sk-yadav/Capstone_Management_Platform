@@ -64,6 +64,20 @@ This document tracks the high-level decision making, architecture, and progress 
     - Initialized App Router structure.
     - Basic routing for different user roles (`admin`, `student`, `professor`).
 
+### Phase 2: User Interface Redesign
+*Goal: Create a unified, premium visual identity for authentication pages.*
+- **Decision**: Blend the **Headspace** layout structure (Clean, Centered, Spacious) with the **Capstone** visual identity (Teal/Blue Gradients, Inter Font).
+- **Implementation**:
+    - **Tailwind Configuration**: Defined custom brand colors (`capstone-teal`, `capstone-blue`) and gradients to match `Capstone copy.html`.
+    - **Global Styling**:
+        - `body`: Soft slate gradient background.
+        - `.card`: Reusable white card component with deep shadows and rounded corners (12px).
+        - `.input`: Clean, spacious input fields with teal focus rings.
+        - `.btn-primary`: Gradient pill buttons with hover lift effects.
+    - **Page Refactoring**:
+        - `login/page.tsx`: Implemented the new centered card layout with gradient headers.
+        - `register/*`: Unified all registration pages (Student, Professor, Admin) to use the same consistent design system.
+ 
 ## 4. Next Steps
 - **Database Logic**: Define models in respective `models.py` files.
 - **API Development**: Create Serializers and Views (DRF) for the identified apps.
@@ -71,4 +85,4 @@ This document tracks the high-level decision making, architecture, and progress 
 - **Auth Implementation**: Finalize JWT and OAuth flows.
 
 ---
-*Last Updated: 2025-12-29*
+*Last Updated: 2026-01-06*
