@@ -38,30 +38,49 @@ export default function ProfessorRegistration() {
 
     return (
         <div className="min-h-screen flex items-center justify-center p-4">
-            <div className="card max-w-md w-full">
-                <h1 className="text-3xl font-bold mb-6 text-center">Professor Registration</h1>
+            <div className="card max-w-[500px] w-full">
+                <div className="text-center mb-6">
+                    <h1 className="text-2xl font-extrabold text-gradient mb-1">Professor Registration</h1>
+                    <p className="text-gray-500 text-sm font-medium">Create your professor account</p>
+                </div>
 
                 {error && (
-                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                    <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6 text-sm flex items-center">
+                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
                         {error}
                     </div>
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Email</label>
-                        <input
-                            type="email"
-                            required
-                            className="input"
-                            value={formData.email}
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            placeholder="professor@example.com"
-                        />
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">First Name</label>
+                            <input
+                                type="text"
+                                required
+                                className="input"
+                                value={formData.first_name}
+                                onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+                                placeholder="Jane"
+                            />
+                        </div>
+                        <div className="space-y-1">
+                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Last Name</label>
+                            <input
+                                type="text"
+                                required
+                                className="input"
+                                value={formData.last_name}
+                                onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
+                                placeholder="Doe"
+                            />
+                        </div>
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Username</label>
+                    <div className="space-y-1">
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Username</label>
                         <input
                             type="text"
                             required
@@ -72,71 +91,59 @@ export default function ProfessorRegistration() {
                         />
                     </div>
 
+                    <div className="space-y-1">
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Email Address</label>
+                        <input
+                            type="email"
+                            required
+                            className="input"
+                            value={formData.email}
+                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            placeholder="professor@university.edu"
+                        />
+                    </div>
+
                     <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium mb-1">First Name</label>
+                        <div className="space-y-1">
+                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Password</label>
                             <input
-                                type="text"
+                                type="password"
                                 required
                                 className="input"
-                                value={formData.first_name}
-                                onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
-                                placeholder="Jane"
+                                value={formData.password}
+                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                placeholder="••••••••"
+                                minLength={8}
                             />
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Last Name</label>
+                        <div className="space-y-1">
+                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">Confirm</label>
                             <input
-                                type="text"
+                                type="password"
                                 required
                                 className="input"
-                                value={formData.last_name}
-                                onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
-                                placeholder="Smith"
+                                value={formData.password2}
+                                onChange={(e) => setFormData({ ...formData, password2: e.target.value })}
+                                placeholder="••••••••"
+                                minLength={8}
                             />
                         </div>
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Password</label>
-                        <input
-                            type="password"
-                            required
-                            className="input"
-                            value={formData.password}
-                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                            placeholder="••••••••"
-                            minLength={8}
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Confirm Password</label>
-                        <input
-                            type="password"
-                            required
-                            className="input"
-                            value={formData.password2}
-                            onChange={(e) => setFormData({ ...formData, password2: e.target.value })}
-                            placeholder="••••••••"
-                            minLength={8}
-                        />
                     </div>
 
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full btn btn-primary mt-4"
                     >
                         {loading ? 'Creating Account...' : 'Register as Professor'}
                     </button>
                 </form>
 
                 <div className="mt-6 text-center text-sm">
-                    <p className="text-gray-600 dark:text-gray-400">
+                    <p className="text-gray-400 text-xs font-semibold uppercase tracking-widest">
                         Already have an account?{' '}
-                        <Link href="/login" className="text-blue-600 hover:underline">
-                            Login here
+                        <Link href="/login" className="text-capstone-teal hover:text-capstone-blue transition-colors ml-1">
+                            Log in
                         </Link>
                     </p>
                 </div>

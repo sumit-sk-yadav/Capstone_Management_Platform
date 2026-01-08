@@ -1,0 +1,2650 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capstone Central 3.0 - Modern EdTech Platform</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100%;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 240px;
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #0EA5A4, #3B82F6);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .logo-text h1 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 2px;
+        }
+
+        .logo-text p {
+            font-size: 10px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .sidebar-nav {
+            padding: 20px 12px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-section-title {
+            font-size: 10px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 0 12px;
+            margin-bottom: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            margin-bottom: 2px;
+            border-radius: 8px;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .nav-item:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, #0EA5A4, #3B82F6);
+            color: white;
+            box-shadow: 0 4px 12px rgba(14, 165, 164, 0.25);
+        }
+
+        .nav-icon {
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: linear-gradient(135deg, #0EA5A4, #3B82F6);
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 12px rgba(14, 165, 164, 0.15);
+        }
+
+        .top-bar-left h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .search-input {
+            width: 280px;
+            padding: 8px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .user-profile:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0EA5A4;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .user-name {
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        /* Dashboard Content Area */
+        .dashboard-content {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+
+        .page-subtitle {
+            font-size: 15px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        /* Grid Layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0EA5A4, #3B82F6);
+            color: white;
+            box-shadow: 0 4px 12px rgba(14, 165, 164, 0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(14, 165, 164, 0.35);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        /* Status Badges */
+        .badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-pending {
+            background: rgba(251, 191, 36, 0.15);
+            color: #d97706;
+        }
+
+        .badge-approved {
+            background: rgba(16, 185, 129, 0.15);
+            color: #059669;
+        }
+
+        .badge-submitted {
+            background: rgba(59, 130, 246, 0.15);
+            color: #2563eb;
+        }
+
+        .badge-late {
+            background: rgba(239, 68, 68, 0.15);
+            color: #dc2626;
+        }
+
+        .badge-orange {
+            background: rgba(249, 115, 22, 0.15);
+            color: #ea580c;
+        }
+
+        /* Metric Cards */
+        .metric-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #0EA5A4, #3B82F6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .metric-label {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .metric-change {
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        .metric-change.positive {
+            color: #10b981;
+        }
+
+        .metric-change.negative {
+            color: #ef4444;
+        }
+
+        /* Progress Bar */
+        .progress-section {
+            margin-bottom: 20px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .progress-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .progress-percentage {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0EA5A4;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0EA5A4, #3B82F6);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #0EA5A4;
+            box-shadow: 0 0 0 3px rgba(14, 165, 164, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .data-table thead {
+            background: #f8fafc;
+        }
+
+        .data-table th {
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .data-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+            color: #0f172a;
+        }
+
+        .data-table tr:hover {
+            background: #f8fafc;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            background: #f8fafc;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #0EA5A4;
+            background: rgba(14, 165, 164, 0.05);
+        }
+
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 16px;
+            background: linear-gradient(135deg, #0EA5A4, #3B82F6);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        /* Drag and Drop Areas */
+        .student-pool {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px dashed #cbd5e1;
+            min-height: 300px;
+        }
+
+        .team-slot {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            border: 2px dashed #cbd5e1;
+            min-height: 200px;
+            transition: all 0.2s ease;
+        }
+
+        .team-slot:hover {
+            border-color: #0EA5A4;
+            background: rgba(14, 165, 164, 0.02);
+        }
+
+        .student-card {
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border: 1px solid #e2e8f0;
+            cursor: grab;
+            transition: all 0.2s ease;
+        }
+
+        .student-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .student-card.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        /* AI Bot */
+        .ai-bot {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #0EA5A4, #3B82F6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(14, 165, 164, 0.35);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .ai-bot:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 32px rgba(14, 165, 164, 0.45);
+        }
+
+        .ai-bot-label {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            background: #0f172a;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.2s ease;
+            pointer-events: none;
+        }
+
+        .ai-bot:hover .ai-bot-label {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Page Switcher */
+        .page-switcher {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            padding: 6px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+            z-index: 999;
+            flex-wrap: wrap;
+            max-width: 90%;
+            gap: 4px;
+        }
+
+        .page-tab {
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #64748b;
+            white-space: nowrap;
+        }
+
+        .page-tab.active {
+            background: linear-gradient(135deg, #0EA5A4, #3B82F6);
+            color: white;
+            box-shadow: 0 2px 8px rgba(14, 165, 164, 0.3);
+        }
+
+        .page-tab:hover:not(.active) {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        /* Page Views */
+        .page-view {
+            display: none;
+        }
+
+        .page-view.active {
+            display: block;
+        }
+
+        /* Version History */
+        .version-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .version-badge {
+            background: linear-gradient(135deg, #0EA5A4, #3B82F6);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        /* Team Member Item */
+        .team-member {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .team-member:last-child {
+            border-bottom: none;
+        }
+
+        .member-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0EA5A4, #3B82F6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        /* Notification Dot */
+        .notification-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+        }
+
+        /* Status Dot */
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-dot-pending {
+            background: #fbbf24;
+        }
+
+        .status-dot-approved {
+            background: #10b981;
+        }
+
+        .status-dot-late {
+            background: #f97316;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .grid-3 {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -240px;
+                top: 0;
+                height: 100%;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+            
+            .sidebar.open {
+                left: 0;
+            }
+            
+            .grid-2, .grid-3, .grid-4 {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-content {
+                padding: 16px;
+            }
+            
+            .page-switcher {
+                position: relative;
+                top: auto;
+                left: auto;
+                transform: none;
+                margin-bottom: 16px;
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body><!-- Page Switcher -->
+  <div class="page-switcher">
+   <div class="page-tab active" onclick="switchPage('student-dashboard')">
+    Student Dashboard
+   </div>
+   <div class="page-tab" onclick="switchPage('admin-dashboard')">
+    Admin Dashboard
+   </div>
+   <div class="page-tab" onclick="switchPage('nomination')">
+    Nomination
+   </div>
+   <div class="page-tab" onclick="switchPage('team-builder')">
+    Team Builder
+   </div>
+   <div class="page-tab" onclick="switchPage('weekly-tasks')">
+    Weekly Tasks
+   </div>
+   <div class="page-tab" onclick="switchPage('submission-tracking')">
+    Submissions
+   </div>
+   <div class="page-tab" onclick="switchPage('faculty-evaluation')">
+    Faculty Evaluation
+   </div>
+   <div class="page-tab" onclick="switchPage('analytics')">
+    Analytics Hub
+   </div>
+  </div><!-- Student Dashboard -->
+  <div id="student-dashboard-page" class="page-view active">
+   <div class="app-container">
+    <aside class="sidebar">
+     <div class="sidebar-header">
+      <div class="logo-section">
+       <div class="logo-icon">
+        C3
+       </div>
+       <div class="logo-text">
+        <h1 id="platform-title">Capstone Central 3.0</h1>
+        <p id="platform-subtitle">Academic Project Management</p>
+       </div>
+      </div>
+     </div>
+     <nav class="sidebar-nav">
+      <div class="nav-section">
+       <div class="nav-section-title">
+        Student
+       </div>
+       <div class="nav-item active">
+        <div class="nav-icon">
+         📊
+        </div><span>Dashboard</span>
+       </div>
+       <div class="nav-item">
+        <div class="nav-icon">
+         📝
+        </div><span>Weekly Tasks</span>
+       </div>
+       <div class="nav-item">
+        <div class="nav-icon">
+         👥
+        </div><span>My Team</span>
+       </div>
+       <div class="nav-item">
+        <div class="nav-icon">
+         📤
+        </div><span>Submissions</span>
+       </div>
+      </div>
+     </nav>
+    </aside>
+    <main class="main-content">
+     <div class="top-bar">
+      <div class="top-bar-left">
+       <h2 id="welcome-text">Welcome back</h2>
+      </div>
+      <div class="top-bar-right"><input type="text" class="search-input" placeholder="Search tasks, resources...">
+       <div class="user-profile">
+        <div class="user-avatar">
+         SJ
+        </div><span class="user-name">Sarah Johnson</span>
+       </div>
+      </div>
+     </div>
+     <div class="dashboard-content">
+      <div class="page-header">
+       <h1 class="page-title">My Dashboard</h1>
+       <p class="page-subtitle">AI Healthcare Solutions • Week 8 of 16 • Team Alpha</p>
+      </div>
+      <div class="grid-3">
+       <div class="metric-card">
+        <div class="metric-value">
+         75%
+        </div>
+        <div class="metric-label">
+         Project Progress
+        </div>
+        <div class="metric-change positive">
+         On Track
+        </div>
+       </div>
+       <div class="metric-card">
+        <div class="metric-value">
+         8/8
+        </div>
+        <div class="metric-label">
+         Tasks Complete
+        </div>
+        <div class="metric-change positive">
+         100% this week
+        </div>
+       </div>
+       <div class="metric-card">
+        <div class="metric-value">
+         A-
+        </div>
+        <div class="metric-label">
+         Current Grade
+        </div>
+        <div class="metric-change positive">
+         Above Average
+        </div>
+       </div>
+      </div>
+      <div class="grid-2">
+       <div class="card">
+        <div class="card-header">
+         <h3 class="card-title">Weekly Tasks</h3><span class="badge badge-submitted">Week 8</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+         <div style="padding: 14px; background: #f8fafc; border-radius: 8px; border-left: 3px solid #0EA5A4;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;"><span style="font-weight: 600; font-size: 14px; color: #0f172a;">Week 1: Project Kickoff</span> <span class="badge badge-submitted">Submitted</span>
+          </div>
+          <p style="font-size: 13px; color: #64748b;">Research phase, team formation</p>
+         </div>
+         <div style="padding: 14px; background: #f8fafc; border-radius: 8px; border-left: 3px solid #0EA5A4;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;"><span style="font-weight: 600; font-size: 14px; color: #0f172a;">Week 2: Requirements Gathering</span> <span class="badge badge-submitted">Submitted</span>
+          </div>
+          <p style="font-size: 13px; color: #64748b;">User stories, system design</p>
+         </div>
+         <div style="padding: 14px; background: #f8fafc; border-radius: 8px; border-left: 3px solid #0EA5A4;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;"><span style="font-weight: 600; font-size: 14px; color: #0f172a;">Week 3: Technical Architecture</span> <span class="badge badge-submitted">Submitted</span>
+          </div>
+          <p style="font-size: 13px; color: #64748b;">System design, tech stack</p>
+         </div>
+         <div style="padding: 14px; background: #f8fafc; border-radius: 8px; border-left: 3px solid #fbbf24;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;"><span style="font-weight: 600; font-size: 14px; color: #0f172a;">Week 4: Sprint 1 Development</span> <span class="badge badge-pending">Pending</span>
+          </div>
+          <p style="font-size: 13px; color: #64748b;">Core features, MVP development</p>
+         </div>
+        </div>
+       </div>
+       <div>
+        <div class="card" style="margin-bottom: 24px;">
+         <div class="card-header">
+          <h3 class="card-title">File Upload</h3><button class="btn btn-primary">Upload New</button>
+         </div>
+         <div class="upload-area" onclick="handleUpload()">
+          <div class="upload-icon">
+           📁
+          </div>
+          <div style="font-weight: 600; color: #0f172a; margin-bottom: 6px;">
+           Drop files here or click to browse
+          </div>
+          <div style="font-size: 13px; color: #64748b;">
+           PDF, DOC, ZIP up to 50MB
+          </div>
+         </div>
+         <div style="margin-top: 20px;">
+          <div style="font-weight: 600; font-size: 14px; color: #0f172a; margin-bottom: 12px;">
+           Version History
+          </div>
+          <div class="version-item"><span class="version-badge">v2</span>
+           <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 13px; color: #0f172a;">
+             Week8_Report_Final.pdf
+            </div>
+            <div style="font-size: 11px; color: #64748b;">
+             Uploaded 2 hours ago • 3.2 MB
+            </div>
+           </div><button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">View</button>
+          </div>
+          <div class="version-item"><span class="version-badge" style="background: #94a3b8;">v1</span>
+           <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 13px; color: #0f172a;">
+             Week8_Report_Draft.pdf
+            </div>
+            <div style="font-size: 11px; color: #64748b;">
+             Uploaded yesterday • 2.8 MB
+            </div>
+           </div><button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">View</button>
+          </div>
+         </div>
+        </div>
+        <div class="card">
+         <div class="card-header">
+          <h3 class="card-title">Team Progress</h3>
+         </div>
+         <div class="progress-section">
+          <div class="progress-header"><span class="progress-title">Overall Project</span> <span class="progress-percentage">75%</span>
+          </div>
+          <div class="progress-bar">
+           <div class="progress-fill" style="width: 75%;"></div>
+          </div>
+         </div>
+         <div style="margin-top: 20px;">
+          <div style="font-weight: 600; font-size: 14px; color: #0f172a; margin-bottom: 12px;">
+           Team Members
+          </div>
+          <div class="team-member">
+           <div class="member-avatar">
+            SJ
+           </div>
+           <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 14px; color: #0f172a;">
+             Sarah Johnson (You)
+            </div>
+            <div style="font-size: 12px; color: #64748b;">
+             AI/ML Development
+            </div>
+           </div>
+           <div class="notification-dot"></div>
+          </div>
+          <div class="team-member">
+           <div class="member-avatar">
+            MK
+           </div>
+           <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 14px; color: #0f172a;">
+             Mike Kim
+            </div>
+            <div style="font-size: 12px; color: #64748b;">
+             Backend Developer
+            </div>
+           </div>
+           <div class="notification-dot"></div>
+          </div>
+          <div class="team-member">
+           <div class="member-avatar">
+            AL
+           </div>
+           <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 14px; color: #0f172a;">
+             Anna Lee
+            </div>
+            <div style="font-size: 12px; color: #64748b;">
+             UI/UX Designer
+            </div>
+           </div>
+           <div class="notification-dot"></div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </main>
+   </div>
+  </div><!-- Admin Dashboard -->
+  <div id="admin-dashboard-page" class="page-view">
+   <div class="app-container">
+    <aside class="sidebar">
+     <div class="sidebar-header">
+      <div class="logo-section">
+       <div class="logo-icon">
+        C3
+       </div>
+       <div class="logo-text">
+        <h1>Capstone Central 3.0</h1>
+        <p>Academic Project Management</p>
+       </div>
+      </div>
+     </div>
+     <nav class="sidebar-nav">
+      <div class="nav-section">
+       <div class="nav-section-title">
+        Admin
+       </div>
+       <div class="nav-item active">
+        <div class="nav-icon">
+         📊
+        </div><span>Dashboard</span>
+       </div>
+       <div class="nav-item">
+        <div class="nav-icon">
+         📋
+        </div><span>Nominations</span>
+       </div>
+       <div class="nav-item">
+        <div class="nav-icon">
+         🏗️
+        </div><span>Team Builder</span>
+       </div>
+       <div class="nav-item">
+        <div class="nav-icon">
+         📈
+        </div><span>Analytics</span>
+       </div>
+      </div>
+     </nav>
+    </aside>
+    <main class="main-content">
+     <div class="top-bar">
+      <div class="top-bar-left">
+       <h2>Admin Dashboard</h2>
+      </div>
+      <div class="top-bar-right"><button class="btn btn-primary">Create Capstone</button>
+       <div class="user-profile">
+        <div class="user-avatar">
+         AD
+        </div><span class="user-name">Admin</span>
+       </div>
+      </div>
+     </div>
+     <div class="dashboard-content">
+      <div class="page-header">
+       <h1 class="page-title">Program Overview</h1>
+       <p class="page-subtitle">Fall 2024 Capstone Management</p>
+      </div>
+      <div class="grid-4">
+       <div class="metric-card">
+        <div class="metric-value">
+         24
+        </div>
+        <div class="metric-label">
+         Active Teams
+        </div>
+        <div class="metric-change">
+         96 students
+        </div>
+       </div>
+       <div class="metric-card">
+        <div class="metric-value">
+         87%
+        </div>
+        <div class="metric-label">
+         Submission Rate
+        </div>
+        <div class="metric-change positive">
+         +5% vs last week
+        </div>
+       </div>
+       <div class="metric-card">
+        <div class="metric-value">
+         12%
+        </div>
+        <div class="metric-label">
+         Late Submissions
+        </div>
+        <div class="metric-change negative">
+         -3% improvement
+        </div>
+       </div>
+       <div class="metric-card">
+        <div class="metric-value">
+         8.2
+        </div>
+        <div class="metric-label">
+         Avg Team Score
+        </div>
+        <div class="metric-change positive">
+         +0.3 increase
+        </div>
+       </div>
+      </div>
+      <div style="display: flex; gap: 12px; margin-bottom: 24px;"><button class="btn btn-primary">📝 Open Nominations</button> <button class="btn btn-secondary">🔒 Close Nominations</button> <button class="btn btn-secondary">📧 Send Weekly Mailer</button> <button class="btn btn-secondary">📊 Export Report</button>
+      </div>
+      <div class="card">
+       <div class="card-header">
+        <h3 class="card-title">Active Capstone Projects</h3><button class="btn btn-secondary">Filter</button>
+       </div>
+       <table class="data-table">
+        <thead>
+         <tr>
+          <th>Capstone Name</th>
+          <th>Teams</th>
+          <th>Current Week</th>
+          <th>Deadline</th>
+          <th>Status</th>
+          <th>Actions</th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td>
+           <div style="font-weight: 600;">
+            Fall 2024 Computer Science
+           </div>
+           <div style="font-size: 12px; color: #64748b;">
+            16-week program
+           </div></td>
+          <td>24 teams</td>
+          <td>Week 8</td>
+          <td>Nov 15, 2024</td>
+          <td><span class="badge badge-approved">Active</span></td>
+          <td><button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Manage</button></td>
+         </tr>
+         <tr>
+          <td>
+           <div style="font-weight: 600;">
+            Fall 2024 Business Analytics
+           </div>
+           <div style="font-size: 12px; color: #64748b;">
+            12-week program
+           </div></td>
+          <td>18 teams</td>
+          <td>Week 6</td>
+          <td>Nov 20, 2024</td>
+          <td><span class="badge badge-approved">Active</span></td>
+          <td><button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Manage</button></td>
+         </tr>
+         <tr>
+          <td>
+           <div style="font-weight: 600;">
+            Spring 2025 Engineering
+           </div>
+           <div style="font-size: 12px; color: #64748b;">
+            16-week program
+           </div></td>
+          <td>0 teams</td>
+          <td>Planning</td>
+          <td>Jan 15, 2025</td>
+          <td><span class="badge badge-pending">Draft</span></td>
+          <td><button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Setup</button></td>
+         </tr>
+        </tbody>
+       </table>
+      </div>
+      <div class="grid-2" style="margin-top: 24px;">
+       <div class="card">
+        <div class="card-header">
+         <h3 class="card-title">Pending Requests</h3><span class="badge badge-late">3 urgent</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+         <div style="padding: 14px; background: rgba(239, 68, 68, 0.05); border-radius: 8px; border-left: 3px solid #ef4444;">
+          <div style="font-weight: 600; margin-bottom: 4px;">
+           Team Gamma - Late Extension Request
+          </div>
+          <div style="font-size: 13px; color: #64748b; margin-bottom: 8px;">
+           Requesting 3-day extension for Week 8 deliverables
+          </div>
+          <div style="display: flex; gap: 8px;"><button class="btn btn-success" style="padding: 6px 12px; font-size: 12px;">Approve</button> <button class="btn btn-danger" style="padding: 6px 12px; font-size: 12px;">Deny</button>
+          </div>
+         </div>
+         <div style="padding: 14px; background: rgba(251, 191, 36, 0.05); border-radius: 8px; border-left: 3px solid #fbbf24;">
+          <div style="font-weight: 600; margin-bottom: 4px;">
+           Late Joiner Application - John Doe
+          </div>
+          <div style="font-size: 13px; color: #64748b; margin-bottom: 8px;">
+           Requesting to join Week 2 • Computer Science
+          </div>
+          <div style="display: flex; gap: 8px;"><button class="btn btn-success" style="padding: 6px 12px; font-size: 12px;">Approve</button> <button class="btn btn-danger" style="padding: 6px 12px; font-size: 12px;">Deny</button>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="card">
+        <div class="card-header">
+         <h3 class="card-title">Team Performance Snapshot</h3>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+         <div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span style="font-size: 13px; color: #0f172a; font-weight: 600;">Excellent (90-100)</span> <span style="font-size: 13px; color: #10b981; font-weight: 700;">8 teams</span>
+          </div>
+          <div class="progress-bar">
+           <div class="progress-fill" style="width: 33%; background: linear-gradient(90deg, #10b981, #059669);"></div>
+          </div>
+         </div>
+         <div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span style="font-size: 13px; color: #0f172a; font-weight: 600;">Good (80-89)</span> <span style="font-size: 13px; color: #0EA5A4; font-weight: 700;">12 teams</span>
+          </div>
+          <div class="progress-bar">
+           <div class="progress-fill" style="width: 50%;"></div>
+          </div>
+         </div>
+         <div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span style="font-size: 13px; color: #0f172a; font-weight: 600;">Needs Improvement (&lt;80)</span> <span style="font-size: 13px; color: #f59e0b; font-weight: 700;">4 teams</span>
+          </div>
+          <div class="progress-bar">
+           <div class="progress-fill" style="width: 17%; background: linear-gradient(90deg, #f59e0b, #d97706);"></div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </main>
+   </div>
+  </div><!-- Nomination Page -->
+  <div id="nomination-page" class="page-view">
+   <div class="app-container">
+    <aside class="sidebar">
+     <div class="sidebar-header">
+      <div class="logo-section">
+       <div class="logo-icon">
+        C3
+       </div>
+       <div class="logo-text">
+        <h1>Capstone Central 3.0</h1>
+        <p>Academic Project Management</p>
+       </div>
+      </div>
+     </div>
+     <nav class="sidebar-nav">
+      <div class="nav-section">
+       <div class="nav-section-title">
+        Student
+       </div>
+       <div class="nav-item active">
+        <div class="nav-icon">
+         📝
+        </div><span>Nomination</span>
+       </div>
+       <div class="nav-item">
+        <div class="nav-icon">
+         📊
+        </div><span>Dashboard</span>
+       </div>
+      </div>
+     </nav>
+    </aside>
+    <main class="main-content">
+     <div class="top-bar">
+      <div class="top-bar-left">
+       <h2>Capstone Nomination</h2>
+      </div>
+      <div class="top-bar-right">
+       <div class="user-profile">
+        <div class="user-avatar">
+         SJ
+        </div><span class="user-name">Sarah Johnson</span>
+       </div>
+      </div>
+     </div>
+     <div class="dashboard-content">
+      <div class="page-header">
+       <h1 class="page-title">Submit Your Nomination</h1>
+       <p class="page-subtitle">Apply for Fall 2024 Capstone Program</p>
+      </div>
+      <div class="grid-2">
+       <div class="card">
+        <div class="card-header">
+         <h3 class="card-title">Nomination Form</h3><span class="badge badge-pending">Draft</span>
+        </div>
+        <form onsubmit="submitNomination(event)">
+         <div class="form-group"><label class="form-label">Full Name</label> <input type="text" class="form-input" value="Sarah Johnson" readonly>
+         </div>
+         <div class="form-group"><label class="form-label">Email Address</label> <input type="email" class="form-input" value="sarah.johnson@university.edu" readonly>
+         </div>
+         <div class="form-group"><label class="form-label">Student ID</label> <input type="text" class="form-input" value="CS2024001" readonly>
+         </div>
+         <div class="form-group"><label class="form-label">Academic Standing</label> <input type="text" class="form-input" value="Senior - Computer Science" readonly>
+         </div>
+         <div class="form-group"><label class="form-label">Why do you want to participate?</label> <textarea class="form-input form-textarea" placeholder="Describe your motivation and goals...">I'm passionate about applying AI to solve real-world healthcare problems and want to work on a project that can make a meaningful impact.</textarea>
+         </div>
+         <div class="form-group"><label style="display: flex; align-items: center; gap: 8px; cursor: pointer;"> <input type="checkbox" required> <span style="font-size: 14px; color: #0f172a;">I agree to the program requirements and commit to full participation</span> </label>
+         </div>
+         <div style="display: flex; gap: 12px;"><button type="button" class="btn btn-secondary" style="flex: 1;">Save Draft</button> <button type="submit" class="btn btn-primary" style="flex: 1;">Submit Nomination</button>
+         </div>
+        </form>
+       </div>
+       <div>
+        <div class="card" style="margin-bottom: 24px;">
+         <div class="card-header">
+          <h3 class="card-title">Requirements</h3>
+         </div>
+         <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 12px; padding: 10px; background: rgba(16, 185, 129, 0.05); border-radius: 8px;"><span style="color: #10b981; font-size: 16px;">✓</span> <span style="font-size: 14px; color: #0f172a;">Minimum 3.0 GPA</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; padding: 10px; background: rgba(16, 185, 129, 0.05); border-radius: 8px;"><span style="color: #10b981; font-size: 16px;">✓</span> <span style="font-size: 14px; color: #0f172a;">Senior standing (90+ credits)</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; padding: 10px; background: rgba(16, 185, 129, 0.05); border-radius: 8px;"><span style="color: #10b981; font-size: 16px;">✓</span> <span style="font-size: 14px; color: #0f172a;">Completed core courses</span>
+          </div>
+         </div>
+        </div>
+        <div class="card">
+         <div class="card-header">
+          <h3 class="card-title">Timeline</h3>
+         </div>
+         <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; gap: 12px;">
+           <div class="status-dot status-dot-approved"></div>
+           <div>
+            <div style="font-weight: 600; font-size: 14px; color: #0f172a;">
+             Nominations Open
+            </div>
+            <div style="font-size: 12px; color: #64748b;">
+             Sept 1 - Oct 15, 2024
+            </div>
+           </div>
+          </div>
+          <div style="display: flex; gap: 12px;">
+           <div class="status-dot status-dot-pending"></div>
+           <div>
+            <div style="font-weight: 600; font-size: 14px; color: #0f172a;">
+             Review Period
+            </div>
+            <div style="font-size: 12px; color: #64748b;">
+             Oct 16 - Oct 30, 2024
+            </div>
+           </div>
+          </div>
+          <div style="display: flex; gap: 12px;">
+           <div class="status-dot" style="background: #94a3b8;"></div>
+           <div>
+            <div style="font-weight: 600; font-size: 14px; color: #0f172a;">
+             Team Formation
+            </div>
+            <div style="font-size: 12px; color: #64748b;">
+             Nov 1 - Nov 15, 2024
+            </div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="card" style="margin-top: 24px;">
+       <div class="card-header">
+        <h3 class="card-title">Admin: Nomination Dashboard</h3>
+        <div style="display: flex; gap: 8px;"><button class="btn btn-secondary">Filter Status</button> <button class="btn btn-primary">Export List</button>
+        </div>
+       </div>
+       <table class="data-table">
+        <thead>
+         <tr>
+          <th>Student Name</th>
+          <th>Student ID</th>
+          <th>Email</th>
+          <th>GPA</th>
+          <th>Submitted</th>
+          <th>Status</th>
+          <th>Actions</th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td>Sarah Johnson</td>
+          <td>CS2024001</td>
+          <td>sarah.j@university.edu</td>
+          <td>3.8</td>
+          <td>Oct 5, 2024</td>
+          <td>
+           <div style="display: flex; align-items: center; gap: 6px;">
+            <div class="status-dot status-dot-approved"></div><span class="badge badge-approved">Approved</span>
+           </div></td>
+          <td><button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">View</button></td>
+         </tr>
+         <tr>
+          <td>Mike Kim</td>
+          <td>CS2024002</td>
+          <td>mike.k@university.edu</td>
+          <td>3.6</td>
+          <td>Oct 8, 2024</td>
+          <td>
+           <div style="display: flex; align-items: center; gap: 6px;">
+            <div class="status-dot status-dot-pending"></div><span class="badge badge-pending">Pending</span>
+           </div></td>
+          <td><button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Review</button></td>
+         </tr>
+         <tr>
+          <td>Emma Davis</td>
+          <td>CS2024003</td>
+          <td>emma.d@university.edu</td>
+          <td>3.9</td>
+          <td>Oct 12, 2024</td>
+          <td>
+           <div style="display: flex; align-items: center; gap: 6px;">
+            <div class="status-dot status-dot-late"></div><span class="badge badge-orange">Late Joiner</span>
+           </div></td>
+          <td><button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Assign Team</button></td>
+         </tr>
+        </tbody>
+       </table>
+      </div>
+     </div>
+    </main>
+   </div>
+  </div><!-- Team Builder Page -->
+  <div id="team-builder-page" class="page-view">
+   <div class="app-container">
+    <aside class="sidebar">
+     <div class="sidebar-header">
+      <div class="logo-section">
+       <div class="logo-icon">
+        C3
+       </div>
+       <div class="logo-text">
+        <h1>Capstone Central 3.0</h1>
+        <p>Academic Project Management</p>
+       </div>
+      </div>
+     </div>
+     <nav class="sidebar-nav">
+      <div class="nav-section">
+       <div class="nav-section-title">
+        Admin
+       </div>
+       <div class="nav-item active">
+        <div class="nav-icon">
+         🏗️
+        </div><span>Team Builder</span>
+       </div>
+       <div class="nav-item">
+        <div class="nav-icon">
+         📊
+        </div><span>Dashboard</span>
+       </div>
+      </div>
+     </nav>
+    </aside>
+    <main class="main-content">
+     <div class="top-bar">
+      <div class="top-bar-left">
+       <h2>Team Builder</h2>
+      </div>
+      <div class="top-bar-right"><button class="btn btn-primary" onclick="autoAssign()">🤖 Auto-Assign Teams</button> <button class="btn btn-secondary">Add Late Joiner</button> <button class="btn btn-success">Finalize Teams</button>
+       <div class="user-profile">
+        <div class="user-avatar">
+         AD
+        </div><span class="user-name">Admin</span>
+       </div>
+      </div>
+     </div>
+     <div class="dashboard-content">
+      <div class="page-header">
+       <h1 class="page-title">Drag &amp; Drop Team Formation</h1>
+       <p class="page-subtitle">Organize approved students into balanced teams</p>
+      </div>
+      <div class="grid-2">
+       <div class="card">
+        <div class="card-header">
+         <h3 class="card-title">Available Students (24)</h3><button class="btn btn-secondary">Filter by Skills</button>
+        </div>
+        <div class="student-pool">
+         <div class="student-card" draggable="true" ondragstart="dragStart(event)">
+          <div style="display: flex; align-items: center; gap: 12px;">
+           <div class="member-avatar" style="width: 32px; height: 32px; font-size: 12px;">
+            SJ
+           </div>
+           <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 14px;">
+             Sarah Johnson
+            </div>
+            <div style="font-size: 12px; color: #64748b;">
+             AI/ML, Python, React
+            </div>
+           </div><span class="badge badge-approved">Approved</span>
+          </div>
+         </div>
+         <div class="student-card" draggable="true" ondragstart="dragStart(event)">
+          <div style="display: flex; align-items: center; gap: 12px;">
+           <div class="member-avatar" style="width: 32px; height: 32px; font-size: 12px;">
+            MK
+           </div>
+           <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 14px;">
+             Mike Kim
+            </div>
+            <div style="font-size: 12px; color: #64748b;">
+             Full-Stack, Node.js, AWS
+            </div>
+           </div><span class="badge badge-approved">Approved</span>
+          </div>
+         </div>
+         <div class="student-card" draggable="true" ondragstart="dragStart(event)">
+          <div style="display: flex; align-items: center; gap: 12px;">
+           <div class="member-avatar" style="width: 32px; height: 32px; font-size: 12px;">
+            AL
+           </div>
+           <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 14px;">
+             Anna Lee
+            </div>
+            <div style="font-size: 12px; color: #64748b;">
+             UI/UX, Design, Frontend
+            </div>
+           </div><span class="badge badge-approved">Approved</span>
+          </div>
+         </div>
+         <div class="student-card" draggable="true" ondragstart="dragStart(event)">
+          <div style="display: flex; align-items: center; gap: 12px;">
+           <div class="member-avatar" style="width: 32px; height: 32px; font-size: 12px;">
+            JW
+           </div>
+           <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 14px;">
+             James Wilson
+            </div>
+            <div style="font-size: 12px; color: #64748b;">
+             Data Science, Analytics
+            </div>
+           </div><span class="badge badge-approved">Approved</span>
+          </div>
+         </div>
+         <div class="student-card" draggable="true" ondragstart="dragStart(event)">
+          <div style="display: flex; align-items: center; gap: 12px;">
+           <div class="member-avatar" style="width: 32px; height: 32px; font-size: 12px;">
+            ED
+           </div>
+           <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 14px;">
+             Emma Davis
+            </div>
+            <div style="font-size: 12px; color: #64748b;">
+             Mobile Dev, Flutter
+            </div>
+           </div><span class="badge badge-orange">Late Join</span>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="card">
+        <div class="card-header">
+         <h3 class="card-title">Team Formation Area</h3><button class="btn btn-secondary">+ Add Team</button>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+         <div class="team-slot" ondrop="drop(event)" ondragover="allowDrop(event)">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 12px;"><span style="font-weight: 700; color: #0f172a;">Team Alpha</span> <span style="font-size: 12px; color: #64748b;">0/4 capacity</span>
+          </div>
+          <div style="text-align: center; color: #94a3b8; font-size: 13px; margin-top: 50px;">
+           Drop students here
+          </div>
+         </div>
+         <div class="team-slot" ondrop="drop(event)" ondragover="allowDrop(event)">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 12px;"><span style="font-weight: 700; color: #0f172a;">Team Beta</span> <span style="font-size: 12px; color: #64748b;">0/4 capacity</span>
+          </div>
+          <div style="text-align: center; color: #94a3b8; font-size: 13px; margin-top: 50px;">
+           Drop students here
+          </div>
+         </div>
+         <div class="team-slot" ondrop="drop(event)" ondragover="allowDrop(event)">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 12px;"><span style="font-weight: 700; color: #0f172a;">Team Gamma</span> <span style="font-size: 12px; color: #64748b;">0/4 capacity</span>
+          </div>
+          <div style="text-align: center; color: #94a3b8; font-size: 13px; margin-top: 50px;">
+           Drop students here
+          </div>
+         </div>
+         <div class="team-slot" ondrop="drop(event)" ondragover="allowDrop(event)">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 12px;"><span style="font-weight: 700; color: #0f172a;">Team Delta</span> <span style="font-size: 12px; color: #64748b;">0/4 capacity</span>
+          </div>
+          <div style="text-align: center; color: #94a3b8; font-size: 13px; margin-top: 50px;">
+           Drop students here
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </main>
+   </div>
+  </div><!-- Weekly Tasks Page -->
+  <div id="weekly-tasks-page" class="page-view">
+   <div class="app-container">
+    <aside class="sidebar">
+     <div class="sidebar-header">
+      <div class="logo-section">
+       <div class="logo-icon">
+        C3
+       </div>
+       <div class="logo-text">
+        <h1>Capstone Central 3.0</h1>
+        <p>Academic Project Management</p>
+       </div>
+      </div>
+     </div>
+     <nav class="sidebar-nav">
+      <div class="nav-section">
+       <div class="nav-section-title">
+        Admin
+       </div>
+       <div class="nav-item active">
+        <div class="nav-icon">
+         📋
+        </div><span>Weekly Tasks</span>
+       </div>
+       <div class="nav-item">
+        <div class="nav-icon">
+         📊
+        </div><span>Dashboard</span>
+       </div>
+      </div>
+     </nav>
+    </aside>
+    <main class="main-content">
+     <div class="top-bar">
+      <div class="top-bar-left">
+       <h2>Weekly Task Management</h2>
+      </div>
+      <div class="top-bar-right"><button class="btn btn-primary" onclick="generateMailer()">🤖 Generate Weekly Mailer using AI</button>
+       <div class="user-profile">
+        <div class="user-avatar">
+         AD
+        </div><span class="user-name">Admin</span>
+       </div>
+      </div>
+     </div>
+     <div class="dashboard-content">
+      <div class="page-header">
+       <h1 class="page-title">Create Weekly Tasks &amp; Mailer</h1>
+       <p class="page-subtitle">Week 8 Configuration &amp; AI-Powered Communication</p>
+      </div>
+      <div class="grid-2">
+       <div class="card">
+        <div class="card-header">
+         <h3 class="card-title">Task Editor - Week 8</h3><button class="btn btn-secondary">Load Template</button>
+        </div>
+        <form onsubmit="publishTasks(event)">
+         <div class="form-group"><label class="form-label">Week Number</label> <input type="number" class="form-input" value="8" min="1" max="16">
+         </div>
+         <div class="form-group"><label class="form-label">Week Theme</label> <input type="text" class="form-input" value="Mid-Project Review &amp; Testing">
+         </div>
+         <div class="form-group"><label class="form-label">Primary Tasks</label> <textarea class="form-input form-textarea">• Complete mid-project presentation slides
+• Conduct user testing sessions (minimum 5 users)
+• Document testing results and feedback
+• Update project timeline based on findings
+• Prepare demo for faculty review</textarea>
+         </div>
+         <div class="form-group"><label class="form-label">Due Date</label> <input type="date" class="form-input" value="2024-11-15">
+         </div>
+         <div style="display: flex; gap: 12px;"><button type="button" class="btn btn-secondary" style="flex: 1;">Save Draft</button> <button type="submit" class="btn btn-primary" style="flex: 1;">Publish Tasks</button>
+         </div>
+        </form>
+       </div>
+       <div>
+        <div class="card" style="margin-bottom: 24px;">
+         <div class="card-header">
+          <h3 class="card-title">Upload Instructions</h3>
+         </div>
+         <div class="upload-area" onclick="handleFileUpload()">
+          <div class="upload-icon">
+           📁
+          </div>
+          <div style="font-weight: 600; color: #0f172a; margin-bottom: 6px;">
+           Upload Task Files
+          </div>
+          <div style="font-size: 13px; color: #64748b;">
+           PDF, DOC, PPT up to 50MB
+          </div>
+         </div>
+         <div style="margin-top: 16px;">
+          <div class="version-item"><span style="color: #3B82F6; font-size: 16px;">📄</span>
+           <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 13px;">
+             Testing_Guidelines.pdf
+            </div>
+            <div style="font-size: 11px; color: #64748b;">
+             2.1 MB • Uploaded today
+            </div>
+           </div><button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;">Remove</button>
+          </div>
+         </div>
+        </div>
+        <div class="card">
+         <div class="card-header">
+          <h3 class="card-title">Quick Actions</h3>
+         </div>
+         <div style="display: flex; flex-direction: column; gap: 10px;"><button class="btn btn-primary" style="width: 100%;">📧 Send Reminder</button> <button class="btn btn-secondary" style="width: 100%;">📋 Copy from Week 7</button> <button class="btn btn-secondary" style="width: 100%;">📊 View Analytics</button>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="card" style="margin-top: 24px;">
+       <div class="card-header">
+        <h3 class="card-title">AI-Generated Mailer Preview</h3><button class="btn btn-secondary">Edit Manually</button>
+       </div>
+       <div style="background: #f8fafc; border-radius: 12px; padding: 24px; border: 1px solid #e2e8f0;">
+        <div style="margin-bottom: 16px;"><strong>Subject:</strong> Week 8 Tasks: Mid-Project Review &amp; Testing Phase
+        </div>
+        <div style="line-height: 1.7; color: #334155;">
+         <p><strong>Hello Capstone Teams!</strong></p>
+         <p>We're now at the halfway point of your capstone journey! This week focuses on <strong>Mid-Project Review &amp; Testing</strong>.</p>
+         <p><strong>📋 This Week's Tasks:</strong></p>
+         <ul style="margin-left: 20px;">
+          <li>Complete mid-project presentation slides</li>
+          <li>Conduct user testing sessions (minimum 5 users)</li>
+          <li>Document testing results and feedback</li>
+         </ul>
+         <p><strong>⏰ Due Date:</strong> Friday, November 15th at 11:59 PM</p>
+         <p>Best of luck with your testing phase!</p>
+        </div>
+       </div>
+       <div style="display: flex; gap: 12px; margin-top: 16px;"><button class="btn btn-secondary" style="flex: 1;">Save as Draft</button> <button class="btn btn-success" style="flex: 1;" onclick="sendMailer()">📧 Send to All Teams</button>
+       </div>
+      </div>
+     </div>
+    </main>
+   </div>
+  </div><!-- Submission Tracking Page -->
+  <div id="submission-tracking-page" class="page-view">
+   <div class="app-container">
+    <aside class="sidebar">
+     <div class="sidebar-header">
+      <div class="logo-section">
+       <div class="logo-icon">
+        C3
+       </div>
+       <div class="logo-text">
+        <h1>Capstone Central 3.0</h1>
+        <p>Academic Project Management</p>
+       </div>
+      </div>
+     </div>
+     <nav class="sidebar-nav">
+      <div class="nav-section">
+       <div class="nav-section-title">
+        Submissions
+       </div>
+       <div class="nav-item active">
+        <div class="nav-icon">
+         📤
+        </div><span>Tracking</span>
+       </div>
+       <div class="nav-item">
+        <div class="nav-icon">
+         ⏰
+        </div><span>Late Requests</span>
+       </div>
+      </div>
+     </nav>
+    </aside>
+    <main class="main-content">
+     <div class="top-bar">
+      <div class="top-bar-left">
+       <h2>Submission Tracking</h2>
+      </div>
+      <div class="top-bar-right"><button class="btn btn-secondary">Export Report</button> <button class="btn btn-primary">Send Reminders</button>
+       <div class="user-profile">
+        <div class="user-avatar">
+         AD
+        </div><span class="user-name">Admin</span>
+       </div>
+      </div>
+     </div>
+     <div class="dashboard-content">
+      <div class="page-header">
+       <h1 class="page-title">Week 8 Submission Status</h1>
+       <p class="page-subtitle">Track deliverables and manage late requests</p>
+      </div>
+      <div class="grid-3">
+       <div class="metric-card">
+        <div class="metric-value">
+         18
+        </div>
+        <div class="metric-label">
+         Submitted
+        </div>
+        <div class="metric-change positive">
+         +6 today
+        </div>
+       </div>
+       <div class="metric-card">
+        <div class="metric-value">
+         6
+        </div>
+        <div class="metric-label">
+         Pending
+        </div>
+        <div class="metric-change negative">
+         Due in 2 days
+        </div>
+       </div>
+       <div class="metric-card">
+        <div class="metric-value">
+         2
+        </div>
+        <div class="metric-label">
+         Late Requests
+        </div>
+        <div class="metric-change">
+         Awaiting review
+        </div>
+       </div>
+      </div>
+      <div class="card">
+       <div class="card-header">
+        <h3 class="card-title">Admin: Submission Table</h3>
+        <div style="display: flex; gap: 8px;"><button class="btn btn-secondary">Filter</button> <button class="btn btn-secondary">Sort</button>
+        </div>
+       </div>
+       <table class="data-table">
+        <thead>
+         <tr>
+          <th>Team Name</th>
+          <th>Submission Link</th>
+          <th>Version</th>
+          <th>Submitted</th>
+          <th>Status</th>
+          <th>Actions</th>
+         </tr>
+        </thead>
+        <tbody>
+         <tr>
+          <td>
+           <div style="font-weight: 600;">
+            Team Alpha
+           </div>
+           <div style="font-size: 12px; color: #64748b;">
+            AI Healthcare
+           </div></td>
+          <td><a href="#" style="color: #0EA5A4; text-decoration: none; font-size: 13px;">View Submission</a></td>
+          <td><span class="version-badge">v2</span></td>
+          <td>Nov 13, 3:45 PM</td>
+          <td><span class="badge badge-submitted">Submitted</span></td>
+          <td><button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Review</button></td>
+         </tr>
+         <tr>
+          <td>
+           <div style="font-weight: 600;">
+            Team Beta
+           </div>
+           <div style="font-size: 12px; color: #64748b;">
+            E-commerce
+           </div></td>
+          <td><a href="#" style="color: #0EA5A4; text-decoration: none; font-size: 13px;">View Submission</a></td>
+          <td><span class="version-badge">v1</span></td>
+          <td>Nov 13, 11:20 AM</td>
+          <td><span class="badge badge-submitted">Submitted</span></td>
+          <td><button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Review</button></td>
+         </tr>
+         <tr>
+          <td>
+           <div style="font-weight: 600;">
+            Team Gamma
+           </div>
+           <div style="font-size: 12px; color: #64748b;">
+            Fitness App
+           </div></td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+          <td><span class="badge badge-late">Late Request</span></td>
+          <td><button class="btn btn-danger" style="padding: 6px 12px; font-size: 12px;">Review Request</button></td>
+         </tr>
+        </tbody>
+       </table>
+      </div>
+      <div class="grid-2" style="margin-top: 24px;">
+       <div class="card">
+        <div class="card-header">
+         <h3 class="card-title">Student: Upload Interface</h3><span class="badge badge-pending">Demo</span>
+        </div>
+        <div style="text-align: center; margin-bottom: 20px;">
+         <div style="font-size: 48px; margin-bottom: 12px;">
+          ⏰
+         </div>
+         <div style="font-weight: 700; font-size: 18px; color: #0f172a; margin-bottom: 4px;">
+          2 days, 14 hours remaining
+         </div>
+         <div style="font-size: 14px; color: #64748b;">
+          Due: Friday, Nov 15 at 11:59 PM
+         </div>
+        </div>
+        <div class="upload-area" onclick="handleFileUpload()">
+         <div class="upload-icon">
+          📤
+         </div>
+         <div style="font-weight: 600; color: #0f172a; margin-bottom: 6px;">
+          Upload Your Deliverable
+         </div>
+         <div style="font-size: 13px; color: #64748b;">
+          All formats accepted • Max 50MB
+         </div>
+        </div><button class="btn btn-primary" style="width: 100%; margin-top: 16px;">Submit Deliverable</button>
+       </div>
+       <div class="card">
+        <div class="card-header">
+         <h3 class="card-title">Late Extension Requests</h3>
+        </div>
+        <div style="padding: 16px; background: rgba(239, 68, 68, 0.05); border-radius: 12px; border-left: 4px solid #ef4444; margin-bottom: 16px;">
+         <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+          <div style="font-weight: 700; color: #0f172a;">
+           Team Gamma
+          </div><span class="badge badge-late">Urgent</span>
+         </div>
+         <div style="font-size: 14px; color: #475569; margin-bottom: 12px;">
+          "Team member hospitalized. Need 3-day extension."
+         </div>
+         <div style="display: flex; gap: 8px;"><button class="btn btn-success" style="padding: 6px 12px; font-size: 12px;">Approve</button> <button class="btn btn-danger" style="padding: 6px 12px; font-size: 12px;">Deny</button>
+         </div>
+        </div>
+        <div style="padding: 16px; background: rgba(251, 191, 36, 0.05); border-radius: 12px; border-left: 4px solid #fbbf24;">
+         <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+          <div style="font-weight: 700; color: #0f172a;">
+           Team Delta
+          </div><span class="badge badge-pending">Review</span>
+         </div>
+         <div style="font-size: 14px; color: #475569; margin-bottom: 12px;">
+          "Technical issues with demo. Need 1 day."
+         </div>
+         <div style="display: flex; gap: 8px;"><button class="btn btn-success" style="padding: 6px 12px; font-size: 12px;">Approve</button> <button class="btn btn-danger" style="padding: 6px 12px; font-size: 12px;">Deny</button>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </main>
+   </div>
+  </div><!-- Faculty Evaluation Page -->
+  <div id="faculty-evaluation-page" class="page-view">
+   <div class="app-container">
+    <aside class="sidebar">
+     <div class="sidebar-header">
+      <div class="logo-section">
+       <div class="logo-icon">
+        C3
+       </div>
+       <div class="logo-text">
+        <h1>Capstone Central 3.0</h1>
+        <p>Academic Project Management</p>
+       </div>
+      </div>
+     </div>
+     <nav class="sidebar-nav">
+      <div class="nav-section">
+       <div class="nav-section-title">
+        Faculty
+       </div>
+       <div class="nav-item active">
+        <div class="nav-icon">
+         📝
+        </div><span>Evaluation</span>
+       </div>
+       <div class="nav-item">
+        <div class="nav-icon">
+         👥
+        </div><span>My Teams</span>
+       </div>
+      </div>
+     </nav>
+    </aside>
+    <main class="main-content">
+     <div class="top-bar">
+      <div class="top-bar-left">
+       <h2>Team Alpha Evaluation</h2>
+      </div>
+      <div class="top-bar-right"><button class="btn btn-primary" onclick="generateFeedback()">🤖 Generate Feedback Draft using AI</button>
+       <div class="user-profile">
+        <div class="user-avatar">
+         DR
+        </div><span class="user-name">Dr. Rodriguez</span>
+       </div>
+      </div>
+     </div>
+     <div class="dashboard-content">
+      <div class="page-header">
+       <h1 class="page-title">Mid-Project Evaluation</h1>
+       <p class="page-subtitle">Review Team Alpha's Week 8 Submission</p>
+      </div>
+      <div class="grid-2">
+       <div class="card">
+        <div class="card-header">
+         <h3 class="card-title">Rubric Scoring</h3><button class="btn btn-secondary">Load Template</button>
+        </div>
+        <table class="data-table">
+         <thead>
+          <tr>
+           <th>Criteria</th>
+           <th>Weight</th>
+           <th>Max</th>
+           <th>Score</th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td>
+            <div style="font-weight: 600;">
+             Presentation Quality
+            </div>
+            <div style="font-size: 12px; color: #64748b;">
+             Clarity, organization
+            </div></td>
+           <td>25%</td>
+           <td>25</td>
+           <td><input type="number" class="form-input" style="width: 60px; padding: 6px; text-align: center;" value="22" min="0" max="25"></td>
+          </tr>
+          <tr>
+           <td>
+            <div style="font-weight: 600;">
+             Testing Methodology
+            </div>
+            <div style="font-size: 12px; color: #64748b;">
+             Approach, thoroughness
+            </div></td>
+           <td>30%</td>
+           <td>30</td>
+           <td><input type="number" class="form-input" style="width: 60px; padding: 6px; text-align: center;" value="26" min="0" max="30"></td>
+          </tr>
+          <tr>
+           <td>
+            <div style="font-weight: 600;">
+             Technical Progress
+            </div>
+            <div style="font-size: 12px; color: #64748b;">
+             Implementation quality
+            </div></td>
+           <td>30%</td>
+           <td>30</td>
+           <td><input type="number" class="form-input" style="width: 60px; padding: 6px; text-align: center;" value="28" min="0" max="30"></td>
+          </tr>
+          <tr>
+           <td>
+            <div style="font-weight: 600;">
+             Timeline Management
+            </div>
+            <div style="font-size: 12px; color: #64748b;">
+             Planning, milestones
+            </div></td>
+           <td>15%</td>
+           <td>15</td>
+           <td><input type="number" class="form-input" style="width: 60px; padding: 6px; text-align: center;" value="13" min="0" max="15"></td>
+          </tr>
+         </tbody>
+        </table>
+        <div style="display: flex; justify-content: space-between; padding: 16px; background: rgba(14, 165, 164, 0.05); border-radius: 12px; margin-top: 16px;">
+         <div>
+          <div style="font-weight: 700; color: #0f172a;">
+           Total Score
+          </div>
+          <div style="font-size: 12px; color: #64748b;">
+           Out of 100 points
+          </div>
+         </div>
+         <div style="font-size: 28px; font-weight: 800; background: linear-gradient(135deg, #0EA5A4, #3B82F6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+          89/100
+         </div>
+        </div>
+       </div>
+       <div>
+        <div class="card" style="margin-bottom: 24px;">
+         <div class="card-header">
+          <h3 class="card-title">Submission Preview</h3><button class="btn btn-secondary">Download All</button>
+         </div>
+         <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div class="version-item"><span style="color: #3B82F6; font-size: 18px;">📊</span>
+           <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 13px;">
+             Mid_Project_Presentation.pdf
+            </div>
+            <div style="font-size: 11px; color: #64748b;">
+             3.2 MB • 2 hours ago
+            </div>
+           </div><button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">View</button>
+          </div>
+          <div class="version-item"><span style="color: #3B82F6; font-size: 18px;">📋</span>
+           <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 13px;">
+             Testing_Report.pdf
+            </div>
+            <div style="font-size: 11px; color: #64748b;">
+             1.8 MB • 2 hours ago
+            </div>
+           </div><button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">View</button>
+          </div>
+          <div class="version-item"><span style="color: #3B82F6; font-size: 18px;">🔗</span>
+           <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 13px;">
+             Demo Link
+            </div>
+            <div style="font-size: 11px; color: #64748b;">
+             ai-healthcare-demo.com
+            </div>
+           </div><button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Visit</button>
+          </div>
+         </div>
+        </div>
+        <div class="card">
+         <div class="card-header">
+          <h3 class="card-title">Team Info</h3>
+         </div>
+         <div class="team-member">
+          <div class="member-avatar">
+           SJ
+          </div>
+          <div style="flex: 1;">
+           <div style="font-weight: 600; font-size: 14px;">
+            Sarah Johnson
+           </div>
+           <div style="font-size: 12px; color: #64748b;">
+            Team Lead • AI/ML
+           </div>
+          </div>
+         </div>
+         <div class="team-member">
+          <div class="member-avatar">
+           MK
+          </div>
+          <div style="flex: 1;">
+           <div style="font-weight: 600; font-size: 14px;">
+            Mike Kim
+           </div>
+           <div style="font-size: 12px; color: #64748b;">
+            Backend Developer
+           </div>
+          </div>
+         </div>
+         <div class="team-member">
+          <div class="member-avatar">
+           AL
+          </div>
+          <div style="flex: 1;">
+           <div style="font-weight: 600; font-size: 14px;">
+            Anna Lee
+           </div>
+           <div style="font-size: 12px; color: #64748b;">
+            UI/UX Designer
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="card" style="margin-top: 24px;">
+       <div class="card-header">
+        <h3 class="card-title">Detailed Feedback</h3>
+       </div>
+       <div class="form-group"><label class="form-label">Overall Comments</label> <textarea class="form-input form-textarea" style="min-height: 140px;" placeholder="Provide comprehensive feedback...">Excellent progress on your AI healthcare project! Your presentation was well-structured and clearly communicated the problem you're solving. The user testing methodology was thorough.
+
+Strengths:
+• Strong technical implementation of the ML model
+• Comprehensive user testing with diverse participants
+• Clear presentation with effective visuals
+
+Areas for improvement:
+• Consider expanding the dataset for better accuracy
+• Add more edge case testing scenarios
+
+Keep up the great work!</textarea>
+       </div>
+       <div style="display: flex; gap: 12px;"><button class="btn btn-secondary" style="flex: 1;">Save Draft</button> <button class="btn btn-success" style="flex: 1;" onclick="submitEvaluation()">Submit Evaluation</button>
+       </div>
+      </div>
+     </div>
+    </main>
+   </div>
+  </div><!-- Analytics Hub Page -->
+  <div id="analytics-page" class="page-view">
+   <div class="app-container">
+    <aside class="sidebar">
+     <div class="sidebar-header">
+      <div class="logo-section">
+       <div class="logo-icon">
+        C3
+       </div>
+       <div class="logo-text">
+        <h1>Capstone Central 3.0</h1>
+        <p>Academic Project Management</p>
+       </div>
+      </div>
+     </div>
+     <nav class="sidebar-nav">
+      <div class="nav-section">
+       <div class="nav-section-title">
+        Analytics
+       </div>
+       <div class="nav-item active">
+        <div class="nav-icon">
+         📈
+        </div><span>Overview</span>
+       </div>
+       <div class="nav-item">
+        <div class="nav-icon">
+         📊
+        </div><span>Reports</span>
+       </div>
+      </div>
+     </nav>
+    </aside>
+    <main class="main-content">
+     <div class="top-bar">
+      <div class="top-bar-left">
+       <h2>Analytics Hub</h2>
+      </div>
+      <div class="top-bar-right"><button class="btn btn-secondary">Export Report</button> <button class="btn btn-primary">Generate Insights</button>
+       <div class="user-profile">
+        <div class="user-avatar">
+         AD
+        </div><span class="user-name">Admin</span>
+       </div>
+      </div>
+     </div>
+     <div class="dashboard-content">
+      <div class="page-header">
+       <h1 class="page-title">Program Analytics Dashboard</h1>
+       <p class="page-subtitle">Comprehensive insights and performance metrics</p>
+      </div>
+      <div class="grid-4">
+       <div class="metric-card">
+        <div class="metric-value">
+         87%
+        </div>
+        <div class="metric-label">
+         Submission Rate
+        </div>
+        <div class="metric-change positive">
+         +5% this week
+        </div>
+       </div>
+       <div class="metric-card">
+        <div class="metric-value">
+         24
+        </div>
+        <div class="metric-label">
+         Active Teams
+        </div>
+        <div class="metric-change">
+         96 students
+        </div>
+       </div>
+       <div class="metric-card">
+        <div class="metric-value">
+         8.2
+        </div>
+        <div class="metric-label">
+         Avg Score
+        </div>
+        <div class="metric-change positive">
+         +0.3 increase
+        </div>
+       </div>
+       <div class="metric-card">
+        <div class="metric-value">
+         12%
+        </div>
+        <div class="metric-label">
+         Late Rate
+        </div>
+        <div class="metric-change negative">
+         -3% improvement
+        </div>
+       </div>
+      </div>
+      <div class="grid-2">
+       <div class="card">
+        <div class="card-header">
+         <h3 class="card-title">Submission Completion (Donut Chart)</h3>
+        </div>
+        <div style="text-align: center; padding: 40px;">
+         <div style="font-size: 64px; margin-bottom: 16px;">
+          📊
+         </div>
+         <div style="font-weight: 700; font-size: 24px; background: linear-gradient(135deg, #0EA5A4, #3B82F6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px;">
+          87%
+         </div>
+         <div style="font-size: 14px; color: #64748b;">
+          Completion Rate
+         </div>
+         <div style="display: flex; justify-content: center; gap: 20px; margin-top: 20px;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+           <div style="width: 12px; height: 12px; border-radius: 3px; background: #0EA5A4;"></div><span style="font-size: 12px; color: #64748b;">Submitted (87%)</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px;">
+           <div style="width: 12px; height: 12px; border-radius: 3px; background: #e2e8f0;"></div><span style="font-size: 12px; color: #64748b;">Pending (13%)</span>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="card">
+        <div class="card-header">
+         <h3 class="card-title">Weekly Submission Timeline</h3>
+        </div>
+        <div style="padding: 20px;">
+         <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div>
+           <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span style="font-size: 13px; font-weight: 600;">Week 1-4</span> <span style="font-size: 13px; font-weight: 700; color: #10b981;">95%</span>
+           </div>
+           <div class="progress-bar">
+            <div class="progress-fill" style="width: 95%; background: linear-gradient(90deg, #10b981, #059669);"></div>
+           </div>
+          </div>
+          <div>
+           <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span style="font-size: 13px; font-weight: 600;">Week 5-8</span> <span style="font-size: 13px; font-weight: 700; color: #0EA5A4;">87%</span>
+           </div>
+           <div class="progress-bar">
+            <div class="progress-fill" style="width: 87%;"></div>
+           </div>
+          </div>
+          <div>
+           <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span style="font-size: 13px; font-weight: 600;">Week 9-12</span> <span style="font-size: 13px; font-weight: 700; color: #f59e0b;">82%</span>
+           </div>
+           <div class="progress-bar">
+            <div class="progress-fill" style="width: 82%; background: linear-gradient(90deg, #f59e0b, #d97706);"></div>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="grid-2" style="margin-top: 24px;">
+       <div class="card">
+        <div class="card-header">
+         <h3 class="card-title">Late Submission Heatmap</h3>
+        </div>
+        <div style="padding: 20px;">
+         <div style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px;">
+          <div style="aspect-ratio: 1; background: #10b981; border-radius: 6px;" title="Week 1: 2%"></div>
+          <div style="aspect-ratio: 1; background: #10b981; border-radius: 6px;" title="Week 2: 3%"></div>
+          <div style="aspect-ratio: 1; background: #fbbf24; border-radius: 6px;" title="Week 3: 8%"></div>
+          <div style="aspect-ratio: 1; background: #10b981; border-radius: 6px;" title="Week 4: 4%"></div>
+          <div style="aspect-ratio: 1; background: #fbbf24; border-radius: 6px;" title="Week 5: 10%"></div>
+          <div style="aspect-ratio: 1; background: #f97316; border-radius: 6px;" title="Week 6: 15%"></div>
+          <div style="aspect-ratio: 1; background: #fbbf24; border-radius: 6px;" title="Week 7: 9%"></div>
+          <div style="aspect-ratio: 1; background: #fbbf24; border-radius: 6px;" title="Week 8: 12%"></div>
+         </div>
+         <div style="display: flex; justify-content: center; gap: 16px; margin-top: 20px;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+           <div style="width: 16px; height: 16px; background: #10b981; border-radius: 4px;"></div><span style="font-size: 12px; color: #64748b;">Low (0-5%)</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px;">
+           <div style="width: 16px; height: 16px; background: #fbbf24; border-radius: 4px;"></div><span style="font-size: 12px; color: #64748b;">Medium (5-15%)</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px;">
+           <div style="width: 16px; height: 16px; background: #f97316; border-radius: 4px;"></div><span style="font-size: 12px; color: #64748b;">High (15%+)</span>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="card">
+        <div class="card-header">
+         <h3 class="card-title">Faculty Review Workload</h3>
+        </div>
+        <div style="padding: 20px;">
+         <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+           <div class="member-avatar" style="width: 32px; height: 32px; font-size: 12px;">
+            DR
+           </div>
+           <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 14px;">
+             Dr. Rodriguez
+            </div>
+            <div style="font-size: 12px; color: #64748b;">
+             6 teams • 24 students
+            </div>
+           </div><span class="badge badge-approved">Balanced</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+           <div class="member-avatar" style="width: 32px; height: 32px; font-size: 12px;">
+            JS
+           </div>
+           <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 14px;">
+             Prof. Smith
+            </div>
+            <div style="font-size: 12px; color: #64748b;">
+             8 teams • 32 students
+            </div>
+           </div><span class="badge badge-late">Heavy</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+           <div class="member-avatar" style="width: 32px; height: 32px; font-size: 12px;">
+            MW
+           </div>
+           <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 14px;">
+             Dr. Wang
+            </div>
+            <div style="font-size: 12px; color: #64748b;">
+             4 teams • 16 students
+            </div>
+           </div><span class="badge badge-approved">Light</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+           <div class="member-avatar" style="width: 32px; height: 32px; font-size: 12px;">
+            LB
+           </div>
+           <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 14px;">
+             Prof. Brown
+            </div>
+            <div style="font-size: 12px; color: #64748b;">
+             6 teams • 24 students
+            </div>
+           </div><span class="badge badge-approved">Balanced</span>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </main>
+   </div>
+  </div><!-- AI Bot -->
+  <div class="ai-bot">
+   <div class="ai-bot-label" id="bot-label">
+    CapstoneBot
+   </div> 🤖
+  </div>
+  <script>
+        // Config object
+        const defaultConfig = {
+            platform_title: "Capstone Central 3.0",
+            platform_subtitle: "Academic Project Management",
+            welcome_text: "Welcome back",
+            bot_label: "CapstoneBot"
+        };
+
+        let config = { ...defaultConfig };
+
+        // Page switching
+        function switchPage(pageId) {
+            document.querySelectorAll('.page-view').forEach(view => view.classList.remove('active'));
+            document.querySelectorAll('.page-tab').forEach(tab => tab.classList.remove('active'));
+            
+            document.getElementById(pageId + '-page').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Drag and Drop
+        function dragStart(e) {
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', e.target.outerHTML);
+            e.target.classList.add('dragging');
+        }
+
+        function allowDrop(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+
+        function drop(e) {
+            e.preventDefault();
+            const data = e.dataTransfer.getData('text/html');
+            const dropTarget = e.target.closest('.team-slot');
+            if (dropTarget) {
+                const placeholder = dropTarget.querySelector('div[style*="text-align: center"]');
+                if (placeholder) placeholder.remove();
+                dropTarget.insertAdjacentHTML('beforeend', data);
+            }
+            document.querySelectorAll('.dragging').forEach(el => el.classList.remove('dragging'));
+        }
+
+        // Action handlers
+        function autoAssign() {
+            showNotification('🤖 Auto-assigning teams based on skills and preferences...', 'success');
+        }
+
+        function generateMailer() {
+            showNotification('🤖 Generating AI-powered weekly mailer...', 'success');
+        }
+
+        function generateFeedback() {
+            showNotification('🤖 Generating AI feedback draft...', 'success');
+        }
+
+        function handleUpload() {
+            showNotification('📁 File upload initiated...', 'success');
+        }
+
+        function handleFileUpload() {
+            showNotification('📁 File upload initiated...', 'success');
+        }
+
+        function submitNomination(e) {
+            e.preventDefault();
+            showNotification('✓ Nomination submitted successfully!', 'success');
+        }
+
+        function publishTasks(e) {
+            e.preventDefault();
+            showNotification('✓ Tasks published to all teams!', 'success');
+        }
+
+        function sendMailer() {
+            showNotification('📧 Mailer sent to all teams!', 'success');
+        }
+
+        function submitEvaluation() {
+            showNotification('✓ Evaluation submitted successfully!', 'success');
+        }
+
+        // Notification system
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            const bgColor = type === 'success' 
+                ? 'linear-gradient(135deg, #0EA5A4, #3B82F6)' 
+                : 'linear-gradient(135deg, #ef4444, #dc2626)';
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 24px;
+                background: ${bgColor};
+                color: white;
+                padding: 14px 20px;
+                border-radius: 12px;
+                box-shadow: 0 8px 24px rgba(14, 165, 164, 0.35);
+                z-index: 1001;
+                font-weight: 600;
+                font-size: 14px;
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.style.transform = 'translateX(0)', 100);
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Element SDK implementation
+        async function onConfigChange(newConfig) {
+            config = { ...config, ...newConfig };
+            
+            const platformTitleEl = document.getElementById('platform-title');
+            if (platformTitleEl) platformTitleEl.textContent = config.platform_title;
+            
+            const platformSubtitleEl = document.getElementById('platform-subtitle');
+            if (platformSubtitleEl) platformSubtitleEl.textContent = config.platform_subtitle;
+            
+            const welcomeTextEl = document.getElementById('welcome-text');
+            if (welcomeTextEl) welcomeTextEl.textContent = config.welcome_text;
+            
+            const botLabelEl = document.getElementById('bot-label');
+            if (botLabelEl) botLabelEl.textContent = config.bot_label;
+        }
+
+        // Initialize Element SDK
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities: () => ({
+                    recolorables: [],
+                    borderables: [],
+                    fontEditable: undefined,
+                    fontSizeable: undefined
+                }),
+                mapToEditPanelValues: (config) => new Map([
+                    ["platform_title", config.platform_title || defaultConfig.platform_title],
+                    ["platform_subtitle", config.platform_subtitle || defaultConfig.platform_subtitle],
+                    ["welcome_text", config.welcome_text || defaultConfig.welcome_text],
+                    ["bot_label", config.bot_label || defaultConfig.bot_label]
+                ])
+            });
+        }
+
+        onConfigChange(defaultConfig);
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a1ffdfd463a46ef',t:'MTc2MzcyNjA2NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
