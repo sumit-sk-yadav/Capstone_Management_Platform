@@ -78,11 +78,20 @@ This document tracks the high-level decision making, architecture, and progress 
         - `login/page.tsx`: Implemented the new centered card layout with gradient headers.
         - `register/*`: Unified all registration pages (Student, Professor, Admin) to use the same consistent design system.
  
-## 4. Next Steps
-- **Database Logic**: Define models in respective `models.py` files.
-- **API Development**: Create Serializers and Views (DRF) for the identified apps.
-- **Frontend Integration**: Connect Next.js pages to Django APIs.
-- **Auth Implementation**: Finalize JWT and OAuth flows.
+### Phase 3: Team Matching Feature
+*Goal: Implement a graph-based team formation system driven by student preferences.*
+- **Decision**: Use `networkx` for graph analysis to identify optimal student pairings/cliques.
+- **Implementation**:
+    - **Models**: Added `StudentPreference` to track directed peer nominations.
+    - **Isolation**: Ensured cohort-based isolation for all matching and preference operations.
+    - **Admin Control**: Built a management interface for admins to trigger auto-generation or manually manage teams.
+    - **Routing**: Restructured dashboard URLs to role-prefix format (e.g., `/student/dashboard`) for better clarity.
+
+## 4. Current Status & Next Steps
+- [x] **Team Matching Core**: Graph algorithm and preference backend.
+- [x] **Dashboard Restructuring**: Migrated to `/admin/dashboard` and `/student/dashboard`.
+- [ ] **Advanced Algorithm**: Refine team size constraints (Min/Max members).
+- [ ] **Professor Features**: Project evaluation and feedback loops.
 
 ---
-*Last Updated: 2026-01-06*
+*Last Updated: 2026-01-08*
