@@ -1,13 +1,17 @@
 'use client';
-
 import { useAuth } from '@/components/AuthProvider';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import api from '@/lib/api';
+import { Team } from '@/types/team';
 
 export default function StudentDashboard() {
     const { user, loading, logout, isAuthenticated } = useAuth();
     const router = useRouter();
+    const [team, setTeam] = useState<Team | null>(null);
+    const [profile, setProfile] = useState<any>(null);
+    const [loadingTeam, setLoadingTeam] = useState(true);
 
     useEffect(() => {
         if (!loading && !isAuthenticated) {
@@ -15,24 +19,66 @@ export default function StudentDashboard() {
         }
     }, [loading, isAuthenticated, router]);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!isAuthenticated) return;
+            try {
+                const [teamRes, profileRes] = await Promise.all([
+                    api.get('/api/students/my-team/'),
+                    api.get('/api/students/my-profile/')
+                ]);
+
+                if (teamRes.status === 200 && teamRes.data && !teamRes.data.message) {
+                    setTeam(teamRes.data);
+                }
+                if (profileRes.status === 200 && profileRes.data) {
+                    setProfile(profileRes.data);
+                }
+            } catch (error) {
+                console.error('Failed to fetch data:', error);
+            } finally {
+                setLoadingTeam(false);
+            }
+        };
+
+        fetchData();
+    }, [isAuthenticated]);
+
     if (loading || !user) return <div className="p-8 text-center">Loading...</div>;
 
+    const showPreferences = !profile?.cohort_teams_locked && !profile?.team;
+
     return (
-        <div className="min-h-screen p-8">
-            <div className="max-w-4xl mx-auto">
-                <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-3xl font-bold text-gray-800">Student Dashboard</h1>
-                    <button onClick={logout} className="btn bg-red-600 text-white hover:bg-red-700 px-4 py-2 rounded">
-                        Logout
-                    </button>
-                </div>
+        <div className="space-y-6">
+            <div className="card bg-white p-6 rounded-lg shadow-sm border border-gray-100 mb-6">
+                <h2 className="text-2xl font-semibold mb-4 text-gray-800">Welcome, {user.first_name}!</h2>
 
-                <div className="card bg-white p-6 rounded-lg shadow-sm border border-gray-100 mb-6">
-                    <h2 className="text-2xl font-semibold mb-4 text-gray-800">Welcome, {user.first_name}!</h2>
-                    <p className="text-gray-600">Cohort and Team details will appear here.</p>
-                </div>
+                {loadingTeam ? (
+                    <p className="text-gray-600">Loading team details...</p>
+                ) : team ? (
+                    <div className="mt-6 border-t pt-4">
+                        <h3 className="text-xl font-medium text-gray-800 mb-4">Your Team: <span className="text-blue-600">{team.name}</span></h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {team.members.map((member) => (
+                                <div key={member.id} className="flex items-center p-3 bg-gray-50 rounded-lg border border-gray-200">
+                                    <div className="bg-blue-100 text-blue-700 rounded-full w-10 h-10 flex items-center justify-center font-bold mr-3 uppercase">
+                                        {member.first_name[0]}{member.last_name[0]}
+                                    </div>
+                                    <div>
+                                        <p className="font-medium text-gray-800">{member.first_name} {member.last_name}</p>
+                                        <p className="text-xs text-gray-500">{member.email}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ) : (
+                    <p className="text-gray-600">You have no assigned team yet. Once the matching process is complete, your team details will appear here.</p>
+                )}
+            </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {showPreferences && (
                     <Link href="/student/dashboard/preferences" className="block group">
                         <div className="card bg-white p-6 rounded-lg shadow-sm border border-gray-200 group-hover:border-blue-400 transition-colors h-full">
                             <div className="flex items-center justify-between mb-4">
@@ -47,12 +93,12 @@ export default function StudentDashboard() {
                             <div className="mt-4 text-blue-600 font-medium group-hover:underline">Manage Preferences &rarr;</div>
                         </div>
                     </Link>
+                )}
 
-                    {/* Placeholder for Project */}
-                    <div className="card bg-gray-50 p-6 rounded-lg border border-dashed border-gray-300 flex flex-col justify-center items-center text-center h-full opacity-75">
-                        <h3 className="text-lg font-semibold text-gray-500 mb-2">My Capstone Project</h3>
-                        <p className="text-sm text-gray-400">Project details will be available once teams are finalized.</p>
-                    </div>
+                {/* Placeholder for Project */}
+                <div className="card bg-gray-50 p-6 rounded-lg border border-dashed border-gray-300 flex flex-col justify-center items-center text-center h-full opacity-75">
+                    <h3 className="text-lg font-semibold text-gray-500 mb-2">My Capstone Project</h3>
+                    <p className="text-sm text-gray-400">Project details will be available once teams are finalized.</p>
                 </div>
             </div>
         </div>

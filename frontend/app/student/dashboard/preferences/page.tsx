@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/components/AuthProvider';
 import api from '@/lib/api';
+import FuzzySearchSelect from '@/components/FuzzySearchSelect';
 
 interface Student {
     id: number;
@@ -28,6 +29,8 @@ export default function StudentPreferencesPage() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
+    const [locked, setLocked] = useState(false);
+
     useEffect(() => {
         if (user) {
             fetchData();
@@ -37,13 +40,18 @@ export default function StudentPreferencesPage() {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const [prefRes, candRes] = await Promise.all([
+            const [prefRes, candRes, profileRes] = await Promise.all([
                 api.get('/api/students/preferences/'),
-                api.get('/api/students/preferences/candidates/')
+                api.get('/api/students/preferences/candidates/'),
+                api.get('/api/students/my-profile/')
             ]);
 
             setPreferences(prefRes.data);
             setCandidates(candRes.data);
+
+            if (profileRes.data.cohort_teams_locked || profileRes.data.team) {
+                setLocked(true);
+            }
         } catch (err: any) {
             setError(err.response?.data?.error || 'Failed to fetch data');
         } finally {
@@ -85,8 +93,25 @@ export default function StudentPreferencesPage() {
 
     if (loading) return <div className="p-8 text-center text-gray-500">Loading preferences...</div>;
 
+    if (locked) {
+        return (
+            <div className="max-w-4xl mx-auto p-6 text-center py-16">
+                <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-6 py-8 rounded-lg">
+                    <svg className="w-16 h-16 mx-auto text-yellow-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <h2 className="text-xl font-bold mb-2">Preferences Locked</h2>
+                    <p>Team formation is complete or you have already been assigned to a team. You can no longer modify your preferences.</p>
+                    <a href="/student/dashboard" className="inline-block mt-6 text-blue-600 hover:text-blue-800 font-medium">
+                        &larr; Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        );
+    }
+
     return (
-        <div className="max-w-4xl mx-auto p-6">
+        <div className="space-y-6">
             <h1 className="text-3xl font-bold mb-6 text-gray-800">Team Preferences</h1>
             <p className="mb-8 text-gray-600">
                 Nominate students you would like to work with. This helps us form teams, but guarantees are not always possible.
@@ -109,19 +134,14 @@ export default function StudentPreferencesPage() {
                     <h2 className="text-lg font-semibold mb-4 text-gray-700">Add Preference</h2>
                     <div className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-500 mb-1">Select Student</label>
-                            <select
-                                className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                            <label className="block text-sm font-medium text-gray-500 mb-1">Search for a Classmate</label>
+                            <FuzzySearchSelect
+                                options={candidates}
                                 value={selectedCandidate}
-                                onChange={(e) => setSelectedCandidate(e.target.value)}
-                            >
-                                <option value="">-- Choose a classmate --</option>
-                                {candidates.map(student => (
-                                    <option key={student.id} value={student.id}>
-                                        {student.first_name} {student.last_name} ({student.email})
-                                    </option>
-                                ))}
-                            </select>
+                                onChange={setSelectedCandidate}
+                                placeholder="Type name, email, or student ID..."
+                                disabled={candidates.length === 0}
+                            />
                         </div>
                         <button
                             onClick={handleAddPreference}

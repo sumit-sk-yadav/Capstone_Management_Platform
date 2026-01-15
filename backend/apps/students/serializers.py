@@ -3,9 +3,32 @@ from .models import StudentPreference, Team, StudentProfile, Cohort
 
 
 class CohortSerializer(serializers.ModelSerializer):
+    total_students = serializers.SerializerMethodField()
+    students_with_teams = serializers.SerializerMethodField()
+    students_without_teams = serializers.SerializerMethodField()
+
     class Meta:
         model = Cohort
-        fields = ["id", "name", "start_date", "end_date", "is_active"]
+        fields = [
+            "id",
+            "name",
+            "start_date",
+            "end_date",
+            "is_active",
+            "teams_locked",
+            "total_students",
+            "students_with_teams",
+            "students_without_teams",
+        ]
+
+    def get_total_students(self, obj):
+        return obj.students.count()
+
+    def get_students_with_teams(self, obj):
+        return obj.students.filter(team__isnull=False).count()
+
+    def get_students_without_teams(self, obj):
+        return obj.students.filter(team__isnull=True).count()
 
 
 class StudentProfileSerializer(serializers.ModelSerializer):
@@ -15,7 +38,22 @@ class StudentProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = StudentProfile
-        fields = ["id", "student_id", "email", "first_name", "last_name", "team"]
+        fields = [
+            "id",
+            "student_id",
+            "email",
+            "first_name",
+            "last_name",
+            "team",
+            "is_solo",
+            "cohort_id",
+            "cohort_teams_locked",
+        ]
+
+    cohort_id = serializers.IntegerField(source="cohort.id", read_only=True)
+    cohort_teams_locked = serializers.BooleanField(
+        source="cohort.teams_locked", read_only=True
+    )
 
 
 class StudentPreferenceSerializer(serializers.ModelSerializer):
@@ -42,7 +80,11 @@ class StudentPreferenceSerializer(serializers.ModelSerializer):
 
 class TeamSerializer(serializers.ModelSerializer):
     members = StudentProfileSerializer(many=True, read_only=True)
+    member_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Team
-        fields = ["id", "name", "cohort", "members", "created_at"]
+        fields = ["id", "name", "cohort", "members", "member_count", "created_at"]
+
+    def get_member_count(self, obj):
+        return obj.members.count()

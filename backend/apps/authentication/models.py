@@ -47,4 +47,14 @@ class User(AbstractUser):
         # Auto-generate username from email if not provided
         if not self.username:
             self.username = self.email.split("@")[0] + str(uuid.uuid4())[:8]
+
+        # Automatically set is_staff and is_superuser for admin users
+        if self.role == "admin":
+            self.is_staff = True
+            self.is_superuser = True
+        else:
+            # Ensure non-admin users don't have these permissions
+            if not self.is_superuser:  # Don't override manually set superusers
+                self.is_staff = False
+
         super().save(*args, **kwargs)

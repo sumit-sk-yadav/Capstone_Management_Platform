@@ -11,6 +11,8 @@ class Cohort(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True)
+    teams_locked = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -52,7 +54,9 @@ class StudentProfile(models.Model):
         Team, on_delete=models.SET_NULL, null=True, blank=True, related_name="members"
     )
     enrollment_date = models.DateField(null=True, blank=True)
+    enrollment_date = models.DateField(null=True, blank=True)
     graduation_year = models.IntegerField(null=True, blank=True)
+    is_solo = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.user.email} - {self.student_id}"
