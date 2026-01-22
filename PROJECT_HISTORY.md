@@ -91,6 +91,32 @@ This document tracks the high-level decision making, architecture, and progress 
   - **Logic & Implementation**: Overrode the `User.save()` method and signals to automatically grant staff/superuser status to any user created with the `admin` role, ensuring they have immediate access to all management tools.
   - **Path**: [models.py](backend/apps/authentication/models.py#L51)
 
+### Phase 6: Quality, Security & Optimization
+- **Model Refinement**:
+  - **Reasoning**: Redundant fields cause migration errors and data inconsistency. Database indexes are essential for maintaining performance as the student population grows.
+  - **Logic & Implementation**: Cleaned up duplicate Boolean and Date fields in the `Student` and `Authentication` models. Integrated database indexes on lookup fields like `student_id` and `enrollment_date`.
+  - **Path**: [students/models.py](backend/apps/students/models.py)
+- **Auth Architecture (DRY)**:
+  - **Reasoning**: Three separate but nearly identical registration serializers and views violate the DRY principle and increase maintenance overhead.
+  - **Logic & Implementation**: Refactored registration serializers to use a `BaseRegistrationSerializer` and implemented a `RegistrationMixin` for views. This maintains separate URLs (for targeted sharing) while using unified logic.
+  - **Path**: [serializers.py](backend/apps/authentication/serializers.py), [views.py](backend/apps/authentication/views.py)
+- **App Namespacing**:
+  - **Reasoning**: Naming a custom app `admin` creates a collision with Django's internal admin suite, leading to obscure import errors.
+  - **Logic & Implementation**: Migrated the `apps.admin` package to `apps.admin_portal`. Updated all signals, settings, and AppConfigs to reflect the new namespace.
+  - **Path**: [admin_portal/](backend/apps/admin_portal/)
+- **Security Hardening**:
+  - **Reasoning**: Open registration for admin roles is a major security risk. Throttling is necessary to prevent brute-force attacks on sensitive auth endpoints.
+  - **Logic & Implementation**: Restricted `AdminRegistrationView` to existing staff members. Configured global `AnonRateThrottle` and `UserRateThrottle` in the REST Framework settings.
+  - **Path**: [settings.py](backend/config/settings.py), [views.py](backend/apps/authentication/views.py)
+- **Dynamic Diagnostics**:
+  - **Reasoning**: Static seed scripts are inflexible for testing different cohort sizes or edge cases.
+  - **Logic & Implementation**: Built a specialized `seed_data` management command that accepts dynamic arguments (`--students`, `--professors`, `--admins`), allowing developers to spin up custom test environments instantly.
+  - **Path**: [seed_data.py](backend/apps/authentication/management/commands/seed_data.py)
+- **Frontend Token Reliability**:
+  - **Reasoning**: Failing to persist refreshed access tokens causes users to be logged out prematurely after one access cycle.
+  - **Logic & Implementation**: Corrected the Axios response interceptor to call `setTokens` upon successful refresh, ensuring the new short-lived token is properly saved back to the browser cookies.
+  - **Path**: [api.ts](frontend/lib/api.ts)
+
 ---
 
 ## 4. Current Status & Next Steps
@@ -99,8 +125,9 @@ This document tracks the high-level decision making, architecture, and progress 
 - [x] **Team Matching**: Graph-based algorithm with configurable sizing.
 - [x] **Manual Management**: High-performance drag-and-drop with locking support.
 - [x] **System Tools**: Admin permission fixes and cleanup scripts.
+- [x] **Core Optimization**: DRY auth, app namespacing, and security hardening.
 - [ ] **Professor Features**: Evaluation workflows and project milestone tracking.
 - [ ] **Notifications**: Real-time status updates for when teams are assigned.
 
 ---
-*Last Updated: 2026-01-15*
+*Last Updated: 2026-01-20*

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getAccessToken, getRefreshToken, removeTokens } from './auth';
+import { getAccessToken, getRefreshToken, removeTokens, setTokens } from './auth';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -43,7 +43,7 @@ api.interceptors.response.use(
                     });
 
                     const { access } = response.data;
-                    // Update token in cookies (import setTokens from auth.ts if needed)
+                    setTokens(access, refreshToken);
 
                     originalRequest.headers.Authorization = `Bearer ${access}`;
                     return api(originalRequest);

@@ -1,3 +1,1 @@
-from django.db import models
-
-# User profile models will go here
+# TODO: Implement user profile models when needed

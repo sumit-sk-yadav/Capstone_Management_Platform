@@ -3,7 +3,7 @@ from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from apps.students.models import StudentProfile
 from apps.professors.models import ProfessorProfile
-from apps.admin.models import AdminProfile
+from apps.admin_portal.models import AdminProfile
 import uuid
 
 User = get_user_model()

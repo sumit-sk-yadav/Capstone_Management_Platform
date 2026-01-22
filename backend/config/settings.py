@@ -6,11 +6,20 @@ from pathlib import Path
 from datetime import timedelta
 from decouple import config
 
+from django.core.exceptions import ImproperlyConfigured
+
 # Build paths inside the project
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config("SECRET_KEY", default="django-insecure-changeme-in-production")
+
+if (
+    not SECRET_KEY
+    or SECRET_KEY.startswith("django-insecure")
+    and not config("DEBUG", default=True, cast=bool)
+):
+    raise ImproperlyConfigured("Set a secure SECRET_KEY in your environment")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=True, cast=bool)
@@ -29,12 +38,13 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "corsheaders",
+    "rest_framework_simplejwt.token_blacklist",
     # Local apps
     "apps.authentication",
     "apps.users",
     "apps.students",
     "apps.professors",
-    "apps.admin",
+    "apps.admin_portal",
     "apps.common",
 ]
 
@@ -122,6 +132,14 @@ REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 20,
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "100/day",
+        "user": "1000/day",
+    },
 }
 
 # JWT Settings
