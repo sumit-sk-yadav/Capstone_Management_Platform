@@ -16,6 +16,11 @@ class CohortSerializer(serializers.ModelSerializer):
             "end_date",
             "is_active",
             "teams_locked",
+            "min_team_size",
+            "max_team_size",
+            "allow_solo_projects",
+            "auto_matching_strategy",
+            "team_formation_deadline",
             "total_students",
             "students_with_teams",
             "students_without_teams",
@@ -48,6 +53,9 @@ class StudentProfileSerializer(serializers.ModelSerializer):
             "is_solo",
             "cohort_id",
             "cohort_teams_locked",
+            "skills",
+            "seeking_team",
+            "assignment_status",
         ]
 
     cohort_id = serializers.IntegerField(source="cohort.id", read_only=True)
@@ -74,17 +82,56 @@ class StudentPreferenceSerializer(serializers.ModelSerializer):
         read_only_fields = ["student", "created_at"]
 
     def validate(self, data):
-        # Additional validation can go here if needed, but model validation handles most
+        # Check for duplicates
+        request = self.context.get("request")
+        if request and hasattr(request.user, "student_profile"):
+            student = request.user.student_profile
+            preferred = data.get("preferred_student")
+            
+            if StudentPreference.objects.filter(
+                student=student, preferred_student=preferred
+            ).exists():
+                raise serializers.ValidationError(
+                    {"preferred_student": "You have already nominated this student."}
+                )
+        
         return data
 
 
 class TeamSerializer(serializers.ModelSerializer):
+    current_size = serializers.IntegerField(read_only=True)
+    member_count = serializers.IntegerField(source="current_size", read_only=True)
+    remaining_slots = serializers.IntegerField(read_only=True)
+    is_full = serializers.BooleanField(read_only=True)
     members = StudentProfileSerializer(many=True, read_only=True)
-    member_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Team
-        fields = ["id", "name", "cohort", "members", "member_count", "created_at"]
+        fields = [
+            "id",
+            "name",
+            "cohort",
+            "members",
+            "current_size",
+            "member_count",
+            "remaining_slots",
+            "is_full",
+            "is_solo",
+            "status",
+            "target_size",
+            "creation_method",
+            "is_locked",
+            "created_at",
+        ]
 
-    def get_member_count(self, obj):
-        return obj.members.count()
+
+class UnassignedStudentSerializer(serializers.Serializer):
+    """For unassigned students view"""
+
+    id = serializers.IntegerField()
+    student_id = serializers.CharField()
+    first_name = serializers.CharField(source="user.first_name")
+    last_name = serializers.CharField(source="user.last_name")
+    email = serializers.EmailField(source="user.email")
+    seeking_team = serializers.BooleanField()
+    assignment_status = serializers.CharField()

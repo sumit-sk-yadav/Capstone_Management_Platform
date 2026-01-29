@@ -2,13 +2,14 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from apps.students.models import Cohort
+from datetime import date
 
 User = get_user_model()
 
 
 class Command(BaseCommand):
-    help = "Seed the database with dynamic number of users"
-
+    help = "Seed the database with dynamic number of users (WIPES EXISTING DATA)"
+    
     def add_arguments(self, parser):
         parser.add_argument(
             "--students", type=int, default=10, help="Number of students to create"
@@ -19,34 +20,27 @@ class Command(BaseCommand):
         parser.add_argument(
             "--admins", type=int, default=1, help="Number of admins to create"
         )
-        parser.add_argument(
-            "--cohort", type=str, default="2026-A", help="Default cohort name"
-        )
-
+    
     def handle(self, *args, **options):
         num_students = options["students"]
         num_professors = options["professors"]
         num_admins = options["admins"]
-        cohort_name = options["cohort"]
-
-        self.stdout.write(
-            f"Seeding {num_students} students, {num_professors} professors, and {num_admins} admins..."
-        )
-
+        
+        self.stdout.write(self.style.WARNING("Wiping all existing data..."))
+        
         with transaction.atomic():
-            # Create or get cohort
-            from datetime import date, timedelta
-
-            cohort, created = Cohort.objects.get_or_create(
-                name=cohort_name,
-                defaults={
-                    "start_date": date.today(),
-                    "end_date": date.today() + timedelta(days=180),
-                },
-            )
-
+            # Wipe everything
+            User.objects.all().delete()
+            Cohort.objects.all().delete()
+            
+            self.stdout.write("Creating single cohort...")
+            from apps.common.utils import get_current_cohort
+            # get_current_cohort creates if missing
+            cohort = get_current_cohort()
+            
             # Create Admins
             for i in range(num_admins):
+
                 email = f"admin{i + 1}@example.com"
                 if not User.objects.filter(email=email).exists():
                     user = User.objects.create_user(
