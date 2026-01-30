@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/components/AuthProvider';
 import api from '@/lib/api';
+import Link from 'next/link';
 
 interface Student {
     id: number;
@@ -74,12 +75,16 @@ export default function AdminTeamsPage() {
         setError('');
         try {
             const [teamsRes, studentsRes, cohortRes] = await Promise.all([
-                api.get(`/api/students/team-matching/list_teams/?cohort_id=${cohortId}`),
+                api.get(`/api/students/teams/?cohort_id=${cohortId}`),
                 api.get(`/api/students/cohorts/${cohortId}/students/`),
                 api.get(`/api/students/cohorts/${cohortId}/`)
             ]);
-            setTeams(teamsRes.data);
-            setStudents(studentsRes.data);
+            // Ensure we handle both paginated and non-paginated responses
+            const teamsArray = Array.isArray(teamsRes.data) ? teamsRes.data : teamsRes.data.results || [];
+            const studentsArray = Array.isArray(studentsRes.data) ? studentsRes.data : studentsRes.data.results || [];
+
+            setTeams(teamsArray);
+            setStudents(studentsArray);
             setSelectedCohortData(cohortRes.data);
         } catch (err: any) {
             setError('Failed to fetch cohort data');
@@ -89,17 +94,17 @@ export default function AdminTeamsPage() {
         }
     };
 
-    const handleGenerateTeams = async () => {
-        if (!selectedCohort || !confirm(`This will recreate teams with a target size of ${teamSize} members. Existing teams will be replaced. Continue?`)) return;
+    const handleAutoMatch = async () => {
+        if (!selectedCohort || !confirm(`This will attempt to match all unassigned students according to cohort settings. Continue?`)) return;
 
         setGenerating(true);
         setError('');
         setSuccess('');
 
         try {
-            const res = await api.post('/api/students/team-matching/generate/', {
+            const res = await api.post('/api/students/teams/auto_match/', {
                 cohort_id: selectedCohort,
-                team_size: teamSize
+                target_size: teamSize
             });
             setSuccess(res.data.message);
             fetchCohortData(selectedCohort);
@@ -115,7 +120,7 @@ export default function AdminTeamsPage() {
 
         setLoading(true);
         try {
-            const res = await api.post('/api/students/team-matching/dissolve_teams/', {
+            const res = await api.post('/api/students/teams/dissolve/', {
                 cohort_id: selectedCohort
             });
             setSuccess(res.data.message);
@@ -252,7 +257,7 @@ export default function AdminTeamsPage() {
         updateLocalState(studentId, { team: null, is_solo: true });
 
         try {
-            await api.post('/api/students/student-ops/mark_solo/', { student_id: studentId });
+            await api.post('/api/students/profiles/mark_solo/', { student_id: studentId });
         } catch (err: any) {
             console.error('Failed to mark student as solo:', err);
             alert('Failed to mark student as solo. Reverting...');
@@ -281,7 +286,7 @@ export default function AdminTeamsPage() {
                 await api.post(`/api/students/teams/${student.team}/remove_member/`, { student_id: studentId });
             }
             if (student.is_solo) {
-                await api.post('/api/students/student-ops/unmark_solo/', { student_id: studentId });
+                await api.post('/api/students/profiles/unmark_solo/', { student_id: studentId });
             }
         } catch (err: any) {
             console.error('Failed to unassign student:', err);
@@ -357,14 +362,14 @@ export default function AdminTeamsPage() {
                     </div>
 
                     <button
-                        onClick={handleGenerateTeams}
+                        onClick={handleAutoMatch}
                         disabled={!selectedCohort || generating || loading || selectedCohortData?.teams_locked}
                         className="btn bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2.5 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap"
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                         </svg>
-                        {generating ? 'Generating...' : 'Auto-Generate Teams'}
+                        {generating ? 'Processing...' : 'Auto-Match Remaining'}
                     </button>
                     <button
                         onClick={handleDissolveTeams}
@@ -380,26 +385,60 @@ export default function AdminTeamsPage() {
                 </div>
             </div>
 
+            {selectedCohortData && selectedCohortData.students_without_teams > 0 && (
+                <div className="bg-amber-50 border border-amber-200 p-4 rounded-lg flex items-center justify-between shadow-sm">
+                    <div className="flex items-center gap-3">
+                        <svg className="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <span className="text-amber-800 font-medium">
+                            {selectedCohortData.students_without_teams} student{selectedCohortData.students_without_teams === 1 ? ' is' : 's are'} unassigned
+                        </span>
+                    </div>
+                    <div className="flex gap-4">
+                        <Link
+                            href="/admin/dashboard/unassigned"
+                            className="text-amber-700 font-semibold hover:underline bg-white px-3 py-1 rounded border border-amber-200"
+                        >
+                            View Details
+                        </Link>
+                    </div>
+                </div>
+            )}
+
             {error && <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg mb-6">{error}</div>}
             {success && <div className="bg-green-50 border border-green-200 text-green-700 p-4 rounded-lg mb-6">{success}</div>}
 
             {selectedCohortData && (
                 <div className="bg-gradient-to-r from-indigo-50 to-blue-50 p-6 rounded-lg border border-indigo-100 mb-6 relative overflow-hidden">
-                    {/* Lock Toggle */}
-                    <div className="absolute top-6 right-6 flex items-center bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm border border-indigo-100">
-                        <span className="mr-3 text-sm font-medium text-gray-700">
-                            {selectedCohortData.teams_locked ? 'Teams Locked' : 'Teams Unlocked'}
-                        </span>
-                        <button
-                            onClick={handleToggleLock}
-                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${selectedCohortData.teams_locked ? 'bg-red-500' : 'bg-gray-200'
-                                }`}
+                    {/* Lock Toggle & Settings */}
+                    <div className="absolute top-6 right-6 flex items-center gap-4">
+                        <Link
+                            href={`/admin/dashboard/cohorts/${selectedCohort}/settings`}
+                            className="bg-white/80 backdrop-blur-sm p-2 rounded-full shadow-sm border border-indigo-100 text-gray-600 hover:text-indigo-600 transition-colors"
+                            title="Cohort Settings"
                         >
-                            <span
-                                className={`${selectedCohortData.teams_locked ? 'translate-x-6' : 'translate-x-1'
-                                    } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-                            />
-                        </button>
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </Link>
+
+                        <div className="flex items-center bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm border border-indigo-100">
+                            <span className="mr-3 text-sm font-medium text-gray-700">
+                                {selectedCohortData.teams_locked ? 'Teams Locked' : 'Teams Unlocked'}
+                            </span>
+                            <button
+                                onClick={handleToggleLock}
+                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${selectedCohortData.teams_locked ? 'bg-red-500' : 'bg-gray-200'
+                                    }`}
+                            >
+                                <span
+                                    className={`${selectedCohortData.teams_locked ? 'translate-x-6' : 'translate-x-1'
+                                        } inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
+                                />
+                            </button>
+                        </div>
                     </div>
 
                     <h2 className="text-xl font-semibold text-gray-800 mb-4">{selectedCohortData.name} Overview</h2>
@@ -561,7 +600,7 @@ export default function AdminTeamsPage() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                                 </svg>
                                 <p className="text-gray-600 font-medium text-lg mb-2">No teams found</p>
-                                <p className="text-gray-500 text-sm">Click "Auto-Generate Teams" to create teams based on student preferences.</p>
+                                <p className="text-gray-500 text-sm">Click "Auto-Match Remaining" to create teams based on student preferences.</p>
                             </div>
                         )}
                     </div>
@@ -578,4 +617,3 @@ export default function AdminTeamsPage() {
         </div>
     );
 }
-

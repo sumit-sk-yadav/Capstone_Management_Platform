@@ -72,6 +72,25 @@ This document tracks the high-level decision making, architecture, and progress 
   - **Reasoning**: Project requirements vary. An "ideal" size of 4 might not be possible for all cohorts, so the algorithm must handle different targets intelligently.
   - **Logic & Implementation**: The matching algorithm was enhanced with a recursive split-and-merge logic. If a preference group exceeds 1.5x the target size, it is split; if groups are too small, they are merged to ensure balanced team sizes.
   - **Path**: [views.py](backend/apps/students/views.py#L115-L163) (TeamMatchingViewSet)
+- **Flexible Team Matching System Implementation**:
+    - **Backend Implementation**:
+        - Enhanced `Cohort` model with min/max team size settings, solo project permission, and auto-matching strategies (`balanced`, `preference_based`, `fill_existing`).
+        - Enhanced `Team` model with `creation_method`, `status`, `target_size`, and `is_locked` fields.
+        - Added `TeamMatchingService` for intelligent automated distribution of students while respecting preferences and clique groups.
+        - Updated `TeamViewSet` and `StudentProfileViewSet` with actions for `auto_match`, `join`, `unassigned`, `assign_solo_projects`, and `request_team`.
+    - **Frontend Implementation**:
+        - Created **Cohort Settings** page for managing team constraints per cohort.
+        - Created **Unassigned Students** view for administrators to manage students without teams and trigger matching.
+        - Integrated alerts and link to settings/unassigned views on the main **Admin Teams** dashboard.
+        - Updated **Student Dashboard** to show team status, members, and a "Find Me a Team" request feature.
+        - Refactored frontend types to align with new backend fields.
+    - **Verification**:
+        - Rewrote unit tests in `apps.students.tests.test_team_matching.py` to cover new API and logic.
+        - Performed consistency checks for backend-frontend integration.
+- **Codebase Optimization**:
+    - Removed redundant `StudentOpsViewSet`.
+    - Consolidated student operation logic.
+    - Cleaned up temporary test artifacts.
 
 ### Phase 5: Team Management & UI Robustness
 - **Dissolve Teams**: 
@@ -116,18 +135,36 @@ This document tracks the high-level decision making, architecture, and progress 
   - **Reasoning**: Failing to persist refreshed access tokens causes users to be logged out prematurely after one access cycle.
   - **Logic & Implementation**: Corrected the Axios response interceptor to call `setTokens` upon successful refresh, ensuring the new short-lived token is properly saved back to the browser cookies.
   - **Path**: [api.ts](frontend/lib/api.ts)
+- **API Alignment & Verification**:
+  - **Reasoning**: Ensuring that the frontend consumes the correct, most recent backend endpoints is critical for system stability.
+  - **Logic & Implementation**: Systematically scanned all frontend API calls and cross-referenced them with backend URLs. Migrated legacy `student-ops` calls to the standardized `StudentProfileViewSet` and `TeamViewSet`. Validated that `cohort_id` filtering is correctly applied across all team lists.
+  - **Path**: [views.py](backend/apps/students/views.py), [page.tsx](frontend/app/admin/dashboard/teams/page.tsx)
+
+### Phase 7: Single Cohort Enforcement & Algorithmic Refinement
+- **Single Cohort Architecture**:
+  - **Reasoning**: Supporting multiple cohorts added unnecessary complexity to the API and logic for the current stage. Enforcing a single cohort simplifies the user experience and the codebase.
+  - **Logic & Implementation**: Created a `get_current_cohort` singleton utility. Refactored the `TeamMatchingService`, `TeamViewSet`, and `StudentProfileViewSet` to remove `cohort_id` as an external parameter, instead using the singleton cohort for all operations.
+  - **Path**: [utils.py](backend/apps/common/utils.py), [services.py](backend/apps/students/services.py), [views.py](backend/apps/students/views.py)
+- **Team Matching Logical Fixes**:
+  - **Reasoning**: The previous algorithm was too rigid, preventing students from being assigned to teams that had already reached their "target size" even if the cohort's maximum limit wasn't met.
+  - **Logic & Implementation**: Relaxed `Team.can_add_member` to allow growth up to `max_team_size` during the auto-matching distribution phase. Fixed a bug where teams created during redistribution were not returned in the final API response.
+  - **Path**: [models.py](backend/apps/students/models.py), [services.py](backend/apps/students/services.py)
+- **Clean Slate Seeding**:
+  - **Reasoning**: Testing matching logic requires a predictable starting state.
+  - **Logic & Implementation**: Updated the `seed_data` command to atomically wipe all previous records before seeding the single cohort, ensuring no "ghost" data interferes with the matching results.
+  - **Path**: [seed_data.py](backend/apps/authentication/management/commands/seed_data.py)
 
 ---
 
 ## 4. Current Status & Next Steps
 - [x] **Architecture**: Modular skeleton and JWT auth.
 - [x] **Redesign**: Consistent Tailwind-based UI components.
-- [x] **Team Matching**: Graph-based algorithm with configurable sizing.
+- [x] **Team Matching**: Single-cohort singleton enforcement and relaxed growth logic.
 - [x] **Manual Management**: High-performance drag-and-drop with locking support.
-- [x] **System Tools**: Admin permission fixes and cleanup scripts.
-- [x] **Core Optimization**: DRY auth, app namespacing, and security hardening.
+- [x] **System Tools**: Admin registration restrictions and clean-slate seeding.
+- [x] **Verification**: Single-cohort API alignment and matching logic fixes.
 - [ ] **Professor Features**: Evaluation workflows and project milestone tracking.
 - [ ] **Notifications**: Real-time status updates for when teams are assigned.
 
 ---
-*Last Updated: 2026-01-20*
+*Last Updated: 2026-01-22*
