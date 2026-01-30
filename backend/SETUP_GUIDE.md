@@ -89,18 +89,14 @@ Response:
 }
 ```
 
-### Admin Google OAuth Login
-**POST** `/api/auth/admin/google-login/`
+### Admin Registration
+**POST** `/api/auth/register/admin/`
 
-Request Body:
-```json
-{
-  "token": "google-id-token-here"
-}
-```
+> [!IMPORTANT]
+> This endpoint is restricted to existing administrators (requires `IsAdminUser` permission).
 
 ### Get Current User
-**GET** `/api/auth/me/`
+**GET** `/api/users/me/`
 
 Headers:
 ```
@@ -143,18 +139,19 @@ curl -X GET http://localhost:8000/api/auth/me/ \
 
 ---
 
-## Google OAuth Setup (For Admin Login)
+## Seeding Data for Testing
 
-1. Go to [Google Cloud Console](https://console.cloud.google.com)
-2. Create a new project
-3. Enable Google+ API
-4. Create OAuth 2.0 credentials
-5. Add authorized redirect URI: `http://localhost:8000/api/auth/admin/google-callback/`
-6. Copy Client ID and Client Secret to `.env`:
-   ```
-   GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
-   GOOGLE_CLIENT_SECRET=your-client-secret
-   ```
+You can use the dynamic seed command to populate the database with test users:
+
+```bash
+python manage.py seed_data --students 10 --professors 3 --admins 1 --cohort "2026-A"
+```
+
+Arguments:
+- `--students`: Number of students (default: 10)
+- `--professors`: Number of professors (default: 3)
+- `--admins`: Number of admins (default: 1)
+- `--cohort`: Cohort name (default: "2026-A")
 
 ---
 

@@ -41,9 +41,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
             // Redirect based on role
             const dashboardMap = {
-                admin: '/dashboard/admin',
-                student: '/dashboard/student',
-                professor: '/dashboard/professor',
+                admin: '/admin/dashboard',
+                student: '/student/dashboard',
+                professor: '/professor/dashboard',
             };
             router.push(dashboardMap[user.role] || '/dashboard');
         } catch (error: any) {
@@ -59,7 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
             setTokens(tokens.access, tokens.refresh);
             setUser(user);
-            router.push('/dashboard/student');
+            router.push('/student/dashboard');
         } catch (error: any) {
             const message = error.response?.data?.email?.[0] ||
                 error.response?.data?.password?.[0] ||
@@ -75,7 +75,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
             setTokens(tokens.access, tokens.refresh);
             setUser(user);
-            router.push('/dashboard/professor');
+            router.push('/professor/dashboard');
         } catch (error: any) {
             const message = error.response?.data?.email?.[0] ||
                 error.response?.data?.password?.[0] ||
@@ -91,7 +91,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
             setTokens(tokens.access, tokens.refresh);
             setUser(user);
-            router.push('/dashboard/admin');
+            router.push('/admin/dashboard');
         } catch (error: any) {
             const message = error.response?.data?.email?.[0] ||
                 error.response?.data?.password?.[0] ||

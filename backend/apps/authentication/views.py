@@ -1,7 +1,7 @@
 from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate, get_user_model
 
@@ -17,94 +17,59 @@ from .serializers import (
 User = get_user_model()
 
 
-class StudentRegistrationView(generics.CreateAPIView):
+class RegistrationMixin:
+    """Mixin to handle common registration logic"""
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+
+        # Generate JWT tokens
+        refresh = RefreshToken.for_user(user)
+
+        role_name = user.get_role_display()
+        return Response(
+            {
+                "user": UserSerializer(user).data,
+                "tokens": {
+                    "refresh": str(refresh),
+                    "access": str(refresh.access_token),
+                },
+                "message": f"{role_name} registered successfully",
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class StudentRegistrationView(RegistrationMixin, generics.CreateAPIView):
     """
-    Student Registration Endpoint - Separate URL
+    Student Registration Endpoint
     POST /api/auth/register/student/
     """
 
     serializer_class = StudentRegistrationSerializer
     permission_classes = [AllowAny]
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
 
-        # Generate JWT tokens
-        refresh = RefreshToken.for_user(user)
-
-        return Response(
-            {
-                "user": UserSerializer(user).data,
-                "tokens": {
-                    "refresh": str(refresh),
-                    "access": str(refresh.access_token),
-                },
-                "message": "Student registered successfully",
-            },
-            status=status.HTTP_201_CREATED,
-        )
-
-
-class ProfessorRegistrationView(generics.CreateAPIView):
+class ProfessorRegistrationView(RegistrationMixin, generics.CreateAPIView):
     """
-    Professor Registration Endpoint - Separate URL
+    Professor Registration Endpoint
     POST /api/auth/register/professor/
     """
 
     serializer_class = ProfessorRegistrationSerializer
     permission_classes = [AllowAny]
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
 
-        # Generate JWT tokens
-        refresh = RefreshToken.for_user(user)
-
-        return Response(
-            {
-                "user": UserSerializer(user).data,
-                "tokens": {
-                    "refresh": str(refresh),
-                    "access": str(refresh.access_token),
-                },
-                "message": "Professor registered successfully",
-            },
-            status=status.HTTP_201_CREATED,
-        )
-
-
-class AdminRegistrationView(generics.CreateAPIView):
+class AdminRegistrationView(RegistrationMixin, generics.CreateAPIView):
     """
-    Admin Registration Endpoint - Separate URL
+    Admin Registration Endpoint - Restricted to existing admins
     POST /api/auth/register/admin/
     """
 
     serializer_class = AdminRegistrationSerializer
-    permission_classes = [AllowAny]
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-
-        # Generate JWT tokens
-        refresh = RefreshToken.for_user(user)
-
-        return Response(
-            {
-                "user": UserSerializer(user).data,
-                "tokens": {
-                    "refresh": str(refresh),
-                    "access": str(refresh.access_token),
-                },
-                "message": "Admin registered successfully",
-            },
-            status=status.HTTP_201_CREATED,
-        )
+    permission_classes = [IsAuthenticated, IsAdminUser]
 
 
 class LoginView(APIView):

@@ -1,34 +1,46 @@
-# Capstone Management Platform - Folder Structure
+# Capstone Management Platform
 
-This repository contains the folder structure for the Capstone Management Platform.
+A comprehensive platform for managing academic capstone projects, facilitating seamless collaboration between students, professors, and administrators.
 
-## Structure Overview
+## Project Structure
 
-- **backend/** - Django REST Framework backend
-- **frontend/** - Next.js frontend with TypeScript and React
+This repository is split into two main components:
 
-## Quick Reference
+- **[backend](./backend)**: Django-based REST API handling authentication, student profiles, and team matching logic.
+- **[frontend](./frontend)**: Next.js 14 App Router application providing role-based dashboards and a premium user interface.
 
-See `Folder_structure.txt` for complete folder structure details.
+## Quick Start
 
-## Files Included
+### 1. Prerequisites
+- Python 3.10+
+- Node.js 18+
+- npm or yarn
 
-This is a folder structure template. All configuration files and directories are present but empty, ready for implementation.
+### 2. Backend Setup
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
+```
+*See [backend/SETUP_GUIDE.md](./backend/SETUP_GUIDE.md) for detailed API documentation and configuration.*
 
-### Backend Files
-- Django configuration files (settings, urls, wsgi, asgi)
-- Environment variable template (.env.example)
-- Static and media directories
+### 3. Frontend Setup
+```bash
+cd frontend
+npm install
+npm run dev
+```
+*See [frontend/SETUP_GUIDE.md](./frontend/SETUP_GUIDE.md) for UI features and troubleshooting.*
 
-### Frontend Files  
-- Next.js configuration files
-- TypeScript configuration
-- Tailwind CSS setup
-- Directory structure for components, hooks, contexts, etc.
+## Architecture & History
+For deep technical insights, design reasoning, and a detailed implementation log, refer to:
+- **[PROJECT_HISTORY.md](./PROJECT_HISTORY.md)**: Technical blueprint and evolution log.
 
-### Root Files
-- .gitignore for Python and Node.js projects
-- docker-compose.yml template
-- This README
-
-For complete documentation of what should go in each file, refer to the detailed `Folder_structure.txt`.
+## Features
+- **Graph-Based Team Matching**: Maximize student preferences using NetworkX.
+- **Role-Based Dashboards**: Tailored experiences for Admins, Professors, and Students.
+- **Optimistic UI**: Zero-flicker drag-and-drop management for teams.
+- **Secure Authentication**: JWT-based stateless auth for all roles.
