@@ -154,17 +154,37 @@ This document tracks the high-level decision making, architecture, and progress 
   - **Logic & Implementation**: Updated the `seed_data` command to atomically wipe all previous records before seeding the single cohort, ensuring no "ghost" data interferes with the matching results.
   - **Path**: [seed_data.py](backend/apps/authentication/management/commands/seed_data.py)
 
+### Phase 8: Reliability & Profile Management
+- **Profile Creation Lifecycle**:
+  - **Reasoning**: Intermittent failures in `StudentProfile` creation during registration led to "profile not found" errors, blocking user onboarding.
+  - **Logic & Implementation**: Hardened the `Post-save` signal logic with improved error handling and existence checks. Introduced a fallback mechanism in the dashboard views to ensure profiles are created if missing.
+  - **Path**: [signals.py](backend/apps/users/signals.py)
+- **Orphan Cleanup Utility**:
+  - **Reasoning**: Legacy data inconsistences required a way to reconcile existing User accounts with missing Profile objects without manual DB intervention.
+  - **Logic & Implementation**: Developed the `fix_orphans` management command to scan the database and retroactively generate missing profiles for all valid student/professor roles.
+  - **Path**: [fix_orphans.py](backend/apps/users/management/commands/fix_orphans.py)
+
+### Phase 9: Student UX & Dashboard Enhancements
+- **Enhanced Preference Selection**:
+  - **Reasoning**: Students needed immediate confirmation of their selections before final submission to avoid confusion and accidental errors.
+  - **Logic & Implementation**: Re-engineered the selection flow to immediately render choices in the dashboard UI using optimistic state management, providing instant visual feedback.
+  - **Path**: [FuzzySearchSelect.tsx](frontend/components/FuzzySearchSelect.tsx), [page.tsx](frontend/app/student/dashboard/page.tsx)
+- **Post-Match Visibility**:
+  - **Reasoning**: Transitioning from "nominated" to "assigned" teammates was visually jarring for students.
+  - **Logic & Implementation**: Updated the student dashboard to dynamically switch views once matching is complete, prominently displaying confirmed team members and their associated project status.
+  - **Path**: [page.tsx](frontend/app/student/dashboard/page.tsx)
+
 ---
 
 ## 4. Current Status & Next Steps
 - [x] **Architecture**: Modular skeleton and JWT auth.
 - [x] **Redesign**: Consistent Tailwind-based UI components.
 - [x] **Team Matching**: Single-cohort singleton enforcement and relaxed growth logic.
-- [x] **Manual Management**: High-performance drag-and-drop with locking support.
+- [x] **Profile Reliability**: Automated signal-based profile creation and orphan cleanup.
+- [x] **Student VX**: Enhanced preference selection and post-match team visibility.
 - [x] **System Tools**: Admin registration restrictions and clean-slate seeding.
-- [x] **Verification**: Single-cohort API alignment and matching logic fixes.
 - [ ] **Professor Features**: Evaluation workflows and project milestone tracking.
 - [ ] **Notifications**: Real-time status updates for when teams are assigned.
 
 ---
-*Last Updated: 2026-01-22*
+*Last Updated: 2026-01-30*
