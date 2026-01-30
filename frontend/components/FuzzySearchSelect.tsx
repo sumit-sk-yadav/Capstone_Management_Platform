@@ -41,6 +41,23 @@ export default function FuzzySearchSelect({
     });
 
     useEffect(() => {
+        if (value && options.length > 0) {
+            const selectedOption = options.find(opt => opt.id.toString() === value);
+            if (selectedOption) {
+                setSearchTerm(`${selectedOption.first_name} ${selectedOption.last_name}`);
+            }
+        } else if (!value) {
+            // Only clear if explicitly empty/reset, but don't clear if user is typing
+            // This check is important. If value overrides, we set term.
+            // But dealing with typing is handled by onChange input.
+            // If prop value changes to empty string externally (like after submission), we should clear.
+            if (searchTerm !== '' && !isOpen) { // Basic heuristic: if closed and no value, clear.
+                setSearchTerm('');
+            }
+        }
+    }, [value, options]);
+
+    useEffect(() => {
         if (searchTerm.trim() === '') {
             setFilteredOptions(options);
         } else {
@@ -153,8 +170,8 @@ export default function FuzzySearchSelect({
                                 <li
                                     key={option.id}
                                     className={`px-4 py-2 cursor-pointer transition-colors ${index === selectedIndex
-                                            ? 'bg-blue-100 text-blue-900'
-                                            : 'hover:bg-gray-100 text-gray-800'
+                                        ? 'bg-blue-100 text-blue-900'
+                                        : 'hover:bg-gray-100 text-gray-800'
                                         }`}
                                     onClick={() => handleSelect(option)}
                                     onMouseEnter={() => setSelectedIndex(index)}

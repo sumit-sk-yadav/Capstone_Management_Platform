@@ -70,10 +70,14 @@ export default function StudentDashboard() {
     const getStatusBadge = (status: string) => {
         switch (status) {
             case 'unassigned': return <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">Unassigned</span>;
-            case 'manual_student': return <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">Student Formed</span>;
-            case 'manual_admin': return <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-medium">Admin Assigned</span>;
-            case 'auto_matched': return <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">Auto-Matched</span>;
-            case 'solo_assignment': return <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium">Solo Project</span>;
+            case 'in_team':
+                if (team?.creation_method === 'auto_matched') return <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">Auto-Matched</span>;
+                if (team?.creation_method === 'manual_admin') return <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-medium">Admin Assigned</span>;
+                if (team?.creation_method === 'manual_student') return <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">Student Formed</span>;
+                if (team?.creation_method === 'solo_assignment') return <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium">Solo Project</span>;
+                return <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">In Team</span>;
+            case 'solo_assigned': return <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-medium">Solo Project</span>;
+            case 'opted_out': return <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">Opted Out</span>;
             default: return null;
         }
     };
@@ -182,7 +186,7 @@ export default function StudentDashboard() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {showPreferences && (
+                {showPreferences ? (
                     <Link href="/student/dashboard/preferences" className="block group">
                         <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 group-hover:border-indigo-400 group-hover:shadow-md transition-all h-full relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-50 rounded-bl-full opacity-30 -mr-6 -mt-6 transition-transform group-hover:scale-110"></div>
@@ -207,7 +211,30 @@ export default function StudentDashboard() {
                             </div>
                         </div>
                     </Link>
-                )}
+                ) : profile?.cohort_teams_locked ? (
+                    <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 h-full relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-gray-50 rounded-bl-full opacity-50 -mr-6 -mt-6"></div>
+                        <div className="relative z-10">
+                            <div className="flex items-center justify-between mb-6">
+                                <div className="bg-gray-100 p-3 rounded-xl">
+                                    <svg className="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">Team Formation Finalized</h3>
+                            <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                                The team matching process for this cohort has been completed. Preferences are now locked.
+                            </p>
+                            <div className="inline-flex items-center text-gray-400 font-medium text-sm">
+                                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                                Locked
+                            </div>
+                        </div>
+                    </div>
+                ) : null}
 
                 <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 h-full relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-gray-50 rounded-bl-full opacity-50 -mr-6 -mt-6"></div>
